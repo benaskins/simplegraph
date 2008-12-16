@@ -9,8 +9,12 @@
  */
 
 
-function SimpleGraph(target) {
+function SimpleGraph(target, labels, data, units) {
   this.target = target;
+  this.labels = labels;
+  this.data = data;
+  this.units = units;
+
   this.settings = $.extend({
     // Dimensions
     width: 600,
@@ -41,21 +45,21 @@ function SimpleGraph(target) {
     fillOpacity: 0.2,
     // -- Hover
     addHover: true,
-  }, (arguments[1] || {}) );
+  }, (arguments[4] || {}) );
 
 
   var r = Raphael(target, this.settings.width, this.settings.height);
-
+  
   // Draw a grid to paint points over
-  this.drawGrid = function(labels, data, maxOveride) {
-    this.changeYAxis(labels, data, maxOveride);
+  this.drawGrid = function(maxOveride) {
+    this.changeYAxis(maxOveride);
 
     // It's assumed that the X Axis remains static over multiple values of Y, so this code stays where it is
-    this.X            = (this.settings.width - this.settings.leftGutter) / labels.length;
+    this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;
     this.leftGridEdge = this.settings.leftGutter + this.X * .5;
     this.topGridEdge  = this.settings.topGutter;
     this.gridWidth    = this.settings.width - this.settings.leftGutter - this.X;
-    this.columns      = labels.length - 1; 
+    this.columns      = this.labels.length - 1; 
             
     r.drawGrid(
       this.leftGridEdge, 
@@ -68,20 +72,26 @@ function SimpleGraph(target) {
     );
     
     // Label the X axis
-    this.addXAxisLabels(labels);
+    this.addXAxisLabels(this.labels);
+  }
+
+  this.newDataSet = function(labels, data, maxOveride) {
+    this.labels = labels;
+    this.data   = data;
+    this.changeYAxis(maxOveride);
   }
   
   // Change the Y axis scale based on either the maximum value in the data array, or the maxOveride, whichever is higher. 
-  this.changeYAxis = function(labels, data, maxOveride) {
+  this.changeYAxis = function(maxOveride) {
     this.gridHeight = this.settings.height - this.settings.topGutter - this.settings.bottomGutter;
-    maxValueYAxis   = calculateMaxYAxis(data, maxOveride);
+    maxValueYAxis   = this.calculateMaxYAxis(maxOveride);
     this.Y          = this.gridHeight / maxValueYAxis;
     this.rows       = maxValueYAxis / 2; //TODO PARAM - steps per row
   }
 
   // Determine the maximum value of the Y Axis
-  function calculateMaxYAxis(data, maxOveride) {
-    var max = Math.max.apply(Math, data);
+   this.calculateMaxYAxis = function(maxOveride) {
+    var max = Math.max.apply(Math, this.data);
     if (maxOveride && maxOveride > max) {
       max = maxOveride;
     }
@@ -103,20 +113,23 @@ function SimpleGraph(target) {
           x = this.leftGridEdge - (10 + offset),
           t = r.text(x, y, i*2).attr(this.yAxisLabelStyle);
     }
-    var caption = r.text(this.leftGridEdge - (20 + offset), (this.gridHeight/2) + (label.length / 2), label).attr(this.yAxisCaptionStyle); 
+    var caption = r.text(
+      this.leftGridEdge - (20 + offset), 
+      (this.gridHeight/2) + (label.length / 2), 
+      label + "(" + this.units + ")").attr(this.yAxisCaptionStyle); 
     // You spin me right round, baby right round
     caption.rotate(270);
   }
   
-  this.addXAxisLabels = function(labels) {
-    for (var i = 0, ii = labels.length; i < ii; i++) {
+  this.addXAxisLabels = function() {
+    for (var i = 0, ii = this.labels.length; i < ii; i++) {
         var x = Math.round(this.settings.leftGutter + this.X * (i + .5)),
-            t = r.text(x, this.settings.height - 6, labels[i]).attr(this.xAxisLabelStyle).toBack();
+            t = r.text(x, this.settings.height - 6, this.labels[i]).attr(this.xAxisLabelStyle).toBack();
     }
   }
   
   // Plot points on the graph
-  this.plot = function(labels, data, units) {
+  this.plot = function() {
     var label            = [],
         is_label_visible = false,
         leave_timer;
@@ -137,8 +150,8 @@ function SimpleGraph(target) {
     label[1] = r.text(60, 40, "").attr(this.hoverLabelStyle).hide(); 
 
     // Plot the points
-    for (var i = 0, ii = labels.length; i < ii; i++) {
-        var y = Math.round(this.settings.height - this.settings.bottomGutter - this.Y * data[i]),
+    for (var i = 0, ii = this.labels.length; i < ii; i++) {
+        var y = Math.round(this.settings.height - this.settings.bottomGutter - this.Y * this.data[i]),
             x = Math.round(this.settings.leftGutter + this.X * (i + .5));
         if (this.settings.drawPoints) {
           var dot  = dots.circle(x, y, this.settings.pointRadius).attr({fill: this.settings.pointColor, stroke: "#fff"});
@@ -161,7 +174,7 @@ function SimpleGraph(target) {
                     newcoord.x -= 114;
                 }
                 frame.show().animateTo(newcoord.x, newcoord.y, (is_label_visible ? 100 : 0));
-                label[0].attr({text: (data + units)}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 15, (is_label_visible ? 100 : 0));
+                label[0].attr({text: (data + this.units)}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 15, (is_label_visible ? 100 : 0));
                 label[1].attr({text: lbl}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 30, (is_label_visible ? 100 : 0));
                 if (settings.drawPoints) {
                   dot.attr("r", settings.activePointRadius);
@@ -181,7 +194,7 @@ function SimpleGraph(target) {
                     r.safari();
                 }, 1);
             });    
-          })(x, y, data[i], labels[i], dot, this.settings);          
+          })(x, y, this.data[i], this.labels[i], dot, this.settings);          
         }
     }
     if (this.settings.fillUnderLine) {

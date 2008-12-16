@@ -22,24 +22,27 @@ window.onload = function () {
 
   // Plot the data
   // - Temperature Graph
-  var temp_graph = new SimpleGraph("temp_graph_holder", {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00"});
-  temp_graph.drawGrid(temp_labels, temp_data, 30);
-  temp_graph.plot(temp_labels, temp_data, "ºC");
+  var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, "ºC",
+    {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00"});
+  temp_graph.drawGrid(30);
+  temp_graph.plot();
   // - Rain Graph
-  var rain_graph = new SimpleGraph("rain_graph_holder", {lineColor: "#00f", pointColor: "#00f", leftGutter: 60});
-  rain_graph.drawGrid(rain_labels, rain_data, 10);
-  rain_graph.addYAxisLabels(0, "Max Rainfall (mm)");
-  rain_graph.plot(rain_labels, rain_data, "mm");
+  var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data, "mm",
+    {lineColor: "#00f", pointColor: "#00f", leftGutter: 60});
+  rain_graph.drawGrid(10);
+  rain_graph.addYAxisLabels(0, "Max Rainfall");
+  rain_graph.plot();
   // - Combined Graph
-  var combined_graph = new SimpleGraph("combined_graph_holder", {lineColor: "#f00", pointColor: "#f00", leftGutter: 90});
-  combined_graph.drawGrid(temp_labels, temp_data, 30);
-  combined_graph.addYAxisLabels(0, "Max Temp (ºC)");
-  combined_graph.plot(temp_labels, temp_data, "ºC");
-  combined_graph.changeYAxis(rain_labels, rain_data, 10);
+  var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data, "ºC",
+    {lineColor: "#f00", pointColor: "#f00", leftGutter: 90});
+  combined_graph.drawGrid(30);
+  combined_graph.addYAxisLabels(0, "Max Temp");
+  combined_graph.plot();
+  combined_graph.newDataSet(rain_labels, rain_data, 10);
   combined_graph.settings.lineColor = "#00f";
   combined_graph.settings.pointColor = "#00f";
-  combined_graph.addYAxisLabels(30, "Max Rainfall (mm)");
-  combined_graph.plot(rain_labels, rain_data, "mm");
+  combined_graph.addYAxisLabels(30, "Max Rainfall");
+  combined_graph.plot();
 
 
 };

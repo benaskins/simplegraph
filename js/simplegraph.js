@@ -9,7 +9,7 @@
  */
 
 
-function SimpleGraph(target, labels, data, units) {
+function SimpleGraph(target, labels, data) {
   // Target div
   this.target = target;
   // X-axis labels
@@ -18,7 +18,6 @@ function SimpleGraph(target, labels, data, units) {
   this.data = data;
 
   this.settings = $.extend({
-    units: units,
     // Dimensions
     width: 600,
     height: 250,
@@ -31,6 +30,8 @@ function SimpleGraph(target, labels, data, units) {
     labelFontSize: "9px",
     // Grid Style
     gridBorderColor: "#ccc",
+    // -- Y Axis Captions
+    yAxisOffset: 0,
     // Graph Style
     // -- Points
     drawPoints: true,
@@ -48,14 +49,14 @@ function SimpleGraph(target, labels, data, units) {
     fillOpacity: 0.2,
     // -- Hover
     addHover: true,
-  }, (arguments[4] || {}) );
+  }, (arguments[3] || {}) );
 
 
   var r = Raphael(target, this.settings.width, this.settings.height);
   
   // Draw a grid to paint points over
-  this.drawGrid = function(maxOveride) {
-    this.changeYAxis(maxOveride);
+  this.drawGrid = function() {
+    this.changeYAxis();
 
     // It's assumed that the X Axis remains static over multiple values of Y, so this code stays where it is
     this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;
@@ -78,22 +79,30 @@ function SimpleGraph(target, labels, data, units) {
     this.addXAxisLabels(this.labels);
   }
 
-  this.newDataSet = function(data, maxOveride) {
-    this.data   = data;
-    this.changeYAxis(maxOveride);
+  this.plotAdditionalDataSet = function(data, options) {
+    this.data                   = data;
+    this.settings.minYAxisValue = options.minYAxisValue;
+    this.settings.lineColor     = options.penColor;
+    this.settings.pointColor    = options.penColor;
+    this.settings.fillColor     = options.penColor;
+    this.settings.yAxisCaption  = options.yAxisCaption;
+    this.changeYAxis();
+    this.addYAxisLabels();
+    this.plot();
   }
-  
+
   // Change the Y axis scale based on either the maximum value in the data array, or the maxOveride, whichever is higher. 
-  this.changeYAxis = function(maxOveride) {
+  this.changeYAxis = function() {
     this.gridHeight = this.settings.height - this.settings.topGutter - this.settings.bottomGutter;
-    maxValueYAxis   = this.calculateMaxYAxis(maxOveride);
+    maxValueYAxis   = this.calculateMaxYAxis();
     this.Y          = this.gridHeight / maxValueYAxis;
     this.rows       = maxValueYAxis / 2; //TODO PARAM - steps per row
   }
 
   // Determine the maximum value of the Y Axis
-   this.calculateMaxYAxis = function(maxOveride) {
-    var max = Math.max.apply(Math, this.data);
+   this.calculateMaxYAxis = function() {
+    var max = Math.max.apply(Math, this.data),
+        maxOveride = this.settings.minYAxisValue;
     if (maxOveride && maxOveride > max) {
       max = maxOveride;
     }
@@ -101,10 +110,10 @@ function SimpleGraph(target, labels, data, units) {
   }
 
   // Add labels to the Y Axis
-  this.addYAxisLabels = function(offset, label) {
+  this.addYAxisLabels = function() {
     // Legend
     r.rect(
-      this.leftGridEdge - (30 + offset), //TODO PARAM - Label Colum Width
+      this.leftGridEdge - (30 + this.settings.yAxisOffset), //TODO PARAM - Label Colum Width
       this.topGridEdge, 
       30, //TODO PARAM - Label Column Width
       this.gridHeight
@@ -112,15 +121,17 @@ function SimpleGraph(target, labels, data, units) {
     
     for (var i = 0, ii = this.rows + 1; i < ii; i++) {
       var y = Math.round(this.settings.height - this.settings.bottomGutter - (i * (this.gridHeight / this.rows)) + 3),
-          x = this.leftGridEdge - (10 + offset),
+          x = this.leftGridEdge - (10 + this.settings.yAxisOffset),
           t = r.text(x, y, i*2).attr(this.yAxisLabelStyle);
     }
     var caption = r.text(
-      this.leftGridEdge - (20 + offset), 
-      (this.gridHeight/2) + (label.length / 2), 
-      label + " (" + this.settings.units + ")").attr(this.yAxisCaptionStyle); 
+      this.leftGridEdge - (20 + this.settings.yAxisOffset), 
+      (this.gridHeight/2) + (this.settings.yAxisCaption.length / 2), 
+      this.settings.yAxisCaption + " (" + this.settings.units + ")").attr(this.yAxisCaptionStyle); 
     // You spin me right round, baby right round
     caption.rotate(270);
+    // Increase the offset for the next caption (if any)
+    this.settings.yAxisOffset = this.settings.yAxisOffset + 30;
   }
   
   this.addXAxisLabels = function() {
@@ -289,5 +300,11 @@ function SimpleGraph(target, labels, data, units) {
       fill: this.settings.hoverValueColor
     }    
   }
+  
   this.setStyleDefaults();
+  this.drawGrid();
+  if (this.settings.yAxisCaption) {
+    this.addYAxisLabels();
+  }
+  this.plot();
 }

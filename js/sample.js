@@ -21,26 +21,16 @@ window.onload = function () {
   $("#temp-data").hide();
 
   // Plot the data
-  // - Temperature Graph
-  var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, "ºC",
-    {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00"});
-  temp_graph.drawGrid(30);
-  temp_graph.plot();
-  // - Rain Graph
-  var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data, "mm",
-    {lineColor: "#00f", pointColor: "#00f", leftGutter: 60});
-  rain_graph.drawGrid(10);
-  rain_graph.addYAxisLabels(0, "Max Rainfall");
-  rain_graph.plot();
-  // - Combined Graph
-  var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data, "ºC",
-    {lineColor: "#f00", pointColor: "#f00", leftGutter: 90});
-  combined_graph.drawGrid(30);
-  combined_graph.addYAxisLabels(0, "Max Temp");
-  combined_graph.plot();
-  combined_graph.newDataSet(rain_data, 10);
-  combined_graph.settings.lineColor = "#00f";
-  combined_graph.settings.pointColor = "#00f";
-  combined_graph.addYAxisLabels(30, "Max Rainfall");
-  combined_graph.plot();
+  // - Simplest Possible Graph - no customisations
+  var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);
+  // - Temperature Graph - adds colour, fill, and a minimum value for the y axis
+  var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
+    {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00", units: "ºC", minYAxisValue: 30});
+  // - Rain Graph - adds a caption to the y axis
+  var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data,
+    {lineColor: "#00f", pointColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
+  // - Combined Graph - plots two data sets with different scales on the one graph
+  var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
+    {lineColor: "#f00", pointColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
+  combined_graph.plotAdditionalDataSet(rain_data, {yAxisCaption: "Max Rainfall", minYAxisValue: 10, penColor: "#00f"})
 };

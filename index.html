@@ -104,13 +104,24 @@
                     </table>
                   </div>
 
-                  <h3>Temperature in 7 days (without y-axis labels)</h3>
-                  <div id='temp_graph_holder'></div>
+                  <h3>Simplest Graph (no customisation)</h3>
+                  <pre>var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);</pre>
+                  <div id='simplest_graph_holder'></div>
 
+                  <h3>Temperature in 7 days (with color, fill, and min y-axis value)</h3>
+                  <pre>var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
+  {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00", units: "ºC", minYAxisValue: 30});</pre>
+                  <div id='temp_graph_holder'></div>
+                  
                   <h3>Rain in 7 days (with y-axis labels)</h3>
+                  <pre>var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data,
+  {lineColor: "#00f", pointColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});</pre>
                   <div id='rain_graph_holder'></div>
                   
                   <h3>Combined Temperature / Rain </h3>
+                  <pre>var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
+  {lineColor: "#f00", pointColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
+combined_graph.plotAdditionalDataSet(rain_data, {yAxisCaption: "Max Rainfall", minYAxisValue: 10, penColor: "#00f"})</pre>                
                   <div id='combined_graph_holder'></div>
 
                   

@@ -24,15 +24,14 @@ window.onload = function () {
   // - Temperature Graph
   var temp_graph = new SimpleGraph("temp_graph_holder", {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00"});
   temp_graph.drawGrid(temp_labels, temp_data, 30);
-  temp_graph.addYAxisLabels(0, "Max Temp (ºC)");
   temp_graph.plot(temp_labels, temp_data, "ºC");
   // - Rain Graph
-  var rain_graph = new SimpleGraph("rain_graph_holder", {lineColor: "#00f", pointColor: "#00f"});
+  var rain_graph = new SimpleGraph("rain_graph_holder", {lineColor: "#00f", pointColor: "#00f", leftGutter: 60});
   rain_graph.drawGrid(rain_labels, rain_data, 10);
   rain_graph.addYAxisLabels(0, "Max Rainfall (mm)");
   rain_graph.plot(rain_labels, rain_data, "mm");
   // - Combined Graph
-  var combined_graph = new SimpleGraph("combined_graph_holder", {lineColor: "#f00", pointColor: "#f00"});
+  var combined_graph = new SimpleGraph("combined_graph_holder", {lineColor: "#f00", pointColor: "#f00", leftGutter: 90});
   combined_graph.drawGrid(temp_labels, temp_data, 30);
   combined_graph.addYAxisLabels(0, "Max Temp (ºC)");
   combined_graph.plot(temp_labels, temp_data, "ºC");

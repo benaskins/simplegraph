@@ -10,8 +10,11 @@
 
 
 function SimpleGraph(target, labels, data, units) {
+  // Target div
   this.target = target;
+  // X-axis labels
   this.labels = labels;
+  // Data to plot, values of Y
   this.data = data;
 
   this.settings = $.extend({
@@ -75,8 +78,7 @@ function SimpleGraph(target, labels, data, units) {
     this.addXAxisLabels(this.labels);
   }
 
-  this.newDataSet = function(labels, data, maxOveride) {
-    this.labels = labels;
+  this.newDataSet = function(data, maxOveride) {
     this.data   = data;
     this.changeYAxis(maxOveride);
   }

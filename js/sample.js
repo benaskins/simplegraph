@@ -38,11 +38,9 @@ window.onload = function () {
   combined_graph.drawGrid(30);
   combined_graph.addYAxisLabels(0, "Max Temp");
   combined_graph.plot();
-  combined_graph.newDataSet(rain_labels, rain_data, 10);
+  combined_graph.newDataSet(rain_data, 10);
   combined_graph.settings.lineColor = "#00f";
   combined_graph.settings.pointColor = "#00f";
   combined_graph.addYAxisLabels(30, "Max Rainfall");
   combined_graph.plot();
-
-
 };

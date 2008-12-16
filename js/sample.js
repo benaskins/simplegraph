@@ -1,4 +1,4 @@
-window.onload = function () {
+$(document).ready(function () {
 
   // Get the data
   var temp_labels = [], temp_data = [];
@@ -45,4 +45,4 @@ window.onload = function () {
   combined_graph.plot();
 
 
-};
+});

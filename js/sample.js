@@ -25,13 +25,13 @@ $(document).ready(function () {
   var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);
   // - Temperature Graph - adds colour, fill, and a minimum value for the y axis
   var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
-    {lineColor: "#f00", pointColor: "#f00", fillUnderLine: true, fillColor: "#f00", units: "ºC", minYAxisValue: 30});
+    {penColor: "#f00", fillUnderLine: true, units: "ºC", minYAxisValue: 30});
   // - Rain Graph - adds a caption to the y axis
   var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data,
-    {lineColor: "#00f", pointColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
+    {penColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
   // - Combined Graph - plots two data sets with different scales on the one graph
   var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
-    {lineColor: "#f00", pointColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
+    {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
   combined_graph.plotAdditionalDataSet(rain_data, 
-    {yAxisCaption: "Max Rainfall", minYAxisValue: 10, penColor: "#00f", units: "mm"})
+    {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})
 });

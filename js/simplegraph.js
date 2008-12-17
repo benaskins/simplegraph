@@ -82,11 +82,10 @@ function SimpleGraph(target, labels, data) {
   this.plotAdditionalDataSet = function(data, options) {
     this.data                   = data;
     this.settings.minYAxisValue = options.minYAxisValue;
-    this.settings.lineColor     = options.penColor;
-    this.settings.pointColor    = options.penColor;
-    this.settings.fillColor     = options.penColor;
+    this.settings.penColor      = options.penColor;
     this.settings.yAxisCaption  = options.yAxisCaption;
     this.settings.units         = options.units;
+    this.setPenColor();
     this.changeYAxis();
     this.addYAxisLabels();
     this.plot();
@@ -302,7 +301,16 @@ function SimpleGraph(target, labels, data) {
     }    
   }
   
+  this.setPenColor = function() {
+    if (this.settings.penColor) {
+      this.settings.lineColor  = this.settings.penColor;
+      this.settings.pointColor = this.settings.penColor;
+      this.settings.fillColor  = this.settings.penColor;
+    }
+  }
+  
   this.setStyleDefaults();
+  this.setPenColor();
   this.drawGrid();
   if (this.settings.yAxisCaption) {
     this.addYAxisLabels();

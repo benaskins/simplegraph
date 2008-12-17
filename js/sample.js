@@ -32,5 +32,6 @@ $(document).ready(function () {
   // - Combined Graph - plots two data sets with different scales on the one graph
   var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
     {lineColor: "#f00", pointColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
-  combined_graph.plotAdditionalDataSet(rain_data, {yAxisCaption: "Max Rainfall", minYAxisValue: 10, penColor: "#00f"})
+  combined_graph.plotAdditionalDataSet(rain_data, 
+    {yAxisCaption: "Max Rainfall", minYAxisValue: 10, penColor: "#00f", units: "mm"})
 });

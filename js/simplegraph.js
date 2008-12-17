@@ -86,6 +86,7 @@ function SimpleGraph(target, labels, data) {
     this.settings.pointColor    = options.penColor;
     this.settings.fillColor     = options.penColor;
     this.settings.yAxisCaption  = options.yAxisCaption;
+    this.settings.units         = options.units;
     this.changeYAxis();
     this.addYAxisLabels();
     this.plot();

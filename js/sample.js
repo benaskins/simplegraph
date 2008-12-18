@@ -22,7 +22,7 @@ $(document).ready(function () {
 
   // Plot the data
   // - Simplest Possible Graph - no customisations
-  var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);
+  var simplest_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);
   // - Temperature Graph - adds colour, fill, and a minimum value for the y axis
   var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
     {penColor: "#f00", fillUnderLine: true, units: "ºC", minYAxisValue: 30});

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2008 Ben Askins
  * 
- * Based on the raphael analytics example (http://raphaeljs.com/analytics.html) by Dmitry Baranovskiy 
+ * Based on the Raphael analytics example (http://raphaeljs.com/analytics.html) by Dmitry Baranovskiy 
  *
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
@@ -36,12 +36,12 @@ function SimpleGraph(target, labels, data) {
     // -- Points
     drawPoints: true,
     pointColor: "#000",
-    pointRadius: 4,    
-    activePointRadius: 7,    
+    pointRadius: 3,    
+    activePointRadius: 5,    
     // -- Line
     drawLine: true,
     lineColor: "#000",
-    lineWidth: 2,
+    lineWidth: 3,
     lineJoin: "round",
     // -- Fill
     fillUnderLine: false,

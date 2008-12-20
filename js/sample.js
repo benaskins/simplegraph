@@ -33,5 +33,5 @@ $(document).ready(function () {
   var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
     {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
   combined_graph.plotAdditionalDataSet(rain_data, 
-    {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})
+    {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
 });

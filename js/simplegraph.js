@@ -48,7 +48,7 @@ function SimpleGraph(target, labels, data) {
     fillColor: "#000",
     fillOpacity: 0.2,
     // -- Hover
-    addHover: true,
+    addHover: true
   }, (arguments[3] || {}) );
 
 
@@ -77,7 +77,7 @@ function SimpleGraph(target, labels, data) {
     
     // Label the X axis
     this.addXAxisLabels(this.labels);
-  }
+  };
 
   this.plotAdditionalDataSet = function(data, options) {
     this.data                   = data;
@@ -89,7 +89,7 @@ function SimpleGraph(target, labels, data) {
     this.changeYAxis();
     this.addYAxisLabels();
     this.plot();
-  }
+  };
 
   // Change the Y axis scale based on either the maximum value in the data array, or the maxOveride, whichever is higher. 
   this.changeYAxis = function() {
@@ -97,7 +97,7 @@ function SimpleGraph(target, labels, data) {
     maxValueYAxis   = this.calculateMaxYAxis();
     this.Y          = this.gridHeight / maxValueYAxis;
     this.rows       = maxValueYAxis / 2; //TODO PARAM - steps per row
-  }
+  };
 
   // Determine the maximum value of the Y Axis
    this.calculateMaxYAxis = function() {
@@ -107,7 +107,7 @@ function SimpleGraph(target, labels, data) {
       max = maxOveride;
     }
     return max;
-  }
+  };
 
   // Add labels to the Y Axis
   this.addYAxisLabels = function() {
@@ -132,14 +132,14 @@ function SimpleGraph(target, labels, data) {
     caption.rotate(270);
     // Increase the offset for the next caption (if any)
     this.settings.yAxisOffset = this.settings.yAxisOffset + 30;
-  }
+  };
   
   this.addXAxisLabels = function() {
     for (var i = 0, ii = this.labels.length; i < ii; i++) {
         var x = Math.round(this.settings.leftGutter + this.X * (i + .5)),
             t = r.text(x, this.settings.height - 6, this.labels[i]).attr(this.xAxisLabelStyle).toBack();
     }
-  }
+  };
   
   // Plot points on the graph
   this.plot = function() {
@@ -177,7 +177,7 @@ function SimpleGraph(target, labels, data) {
         }
         if (this.settings.addHover) {
           var rect = r.rect(x - 50, y - 50, 100, 100).attr({stroke: "none", fill: "#fff", opacity: 0}); //TODO PARAM - hover target width / height
-          // Dimitry's animation magic
+          // Dmitry's animation magic
           (function addHoverAnimation(x, y, data, lbl, dot, settings) {
             var timer, i = 0;
             $(rect[0]).hover(function () {
@@ -214,7 +214,7 @@ function SimpleGraph(target, labels, data) {
       bgp.lineTo(x, this.settings.height - this.settings.bottomGutter).andClose();      
     }
     frame.toFront();
-  }
+  };
 
   this.setStyleDefaults = function() {
     // X and Y axis labels and captions default to global style if not provided
@@ -273,33 +273,33 @@ function SimpleGraph(target, labels, data) {
     this.labelStyle = {
       font: this.settings.labelFontSize + '"' + this.settings.labelFont + '"', 
       fill: this.settings.labelColor
-    }
+    };
     // - X Axis Labels
     this.xAxisLabelStyle = {
       font: this.settings.xAxisLabelFontSize + '"' + this.settings.xAxisLabelFont + '"', 
       fill: this.settings.xAxisLabelColor
-    }
+    };
     // - Y Axis Labels
     this.yAxisLabelStyle = {
       font: this.settings.yAxisLabelFontSize + '"' + this.settings.yAxisLabelFont + '"', 
       fill: this.settings.yAxisLabelColor
-    }
+    };
     // - Y Axis Caption
     this.yAxisCaptionStyle = {
       font: this.settings.yAxisCaptionFontSize + '"' + this.settings.yAxisCaptionFont + '"', 
       fill: this.settings.yAxisCaptionColor
-    }
+    };
     // - Hover Labels
     this.hoverLabelStyle = {
       font: this.settings.hoverLabelFontSize + '"' + this.settings.hoverLabelFont + '"', 
       fill: this.settings.hoverLabelColor
-    }
+    };
     // - Hover Values
     this.hoverValueStyle = {
       font: this.settings.hoverValueFontSize + '"' + this.settings.hoverValueFont + '"', 
       fill: this.settings.hoverValueColor
-    }    
-  }
+    };    
+  };
   
   this.setPenColor = function() {
     if (this.settings.penColor) {
@@ -307,7 +307,7 @@ function SimpleGraph(target, labels, data) {
       this.settings.pointColor = this.settings.penColor;
       this.settings.fillColor  = this.settings.penColor;
     }
-  }
+  };
   
   this.setStyleDefaults();
   this.setPenColor();

@@ -48,7 +48,9 @@ function SimpleGraph(target, labels, data) {
     fillColor: "#000",
     fillOpacity: 0.2,
     // -- Hover
-    addHover: true
+    addHover: true,
+    // Mystery Factor - originaly hardcoded to .5 throughout code, need to talk to Dmitry to demystify
+    mysteryFactor: 0
   }, (arguments[3] || {}) );
 
 
@@ -60,7 +62,7 @@ function SimpleGraph(target, labels, data) {
 
     // It's assumed that the X Axis remains static over multiple values of Y, so this code stays where it is
     this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;
-    this.leftGridEdge = this.settings.leftGutter + this.X * .5;
+    this.leftGridEdge = this.settings.leftGutter + this.X * this.settings.mysteryFactor;
     this.topGridEdge  = this.settings.topGutter;
     this.gridWidth    = this.settings.width - this.settings.leftGutter - this.X;
     this.columns      = this.labels.length - 1; 
@@ -136,7 +138,7 @@ function SimpleGraph(target, labels, data) {
   
   this.addXAxisLabels = function() {
     for (var i = 0, ii = this.labels.length; i < ii; i++) {
-        var x = Math.round(this.settings.leftGutter + this.X * (i + .5)),
+        var x = Math.round(this.settings.leftGutter + this.X * (i + this.settings.mysteryFactor)),
             t = r.text(x, this.settings.height - 6, this.labels[i]).attr(this.xAxisLabelStyle).toBack();
     }
   };
@@ -152,7 +154,7 @@ function SimpleGraph(target, labels, data) {
     
     // Fill path
     var bgp = r.path({stroke: "none", fill: this.settings.fillColor, opacity: this.settings.fillOpacity})
-                .moveTo(this.settings.leftGutter + this.X * .5, this.settings.height - this.settings.bottomGutter);
+                .moveTo(this.settings.leftGutter + this.X * this.settings.mysteryFactor, this.settings.height - this.settings.bottomGutter);
 
     var dots  = r.group(),
         cover = r.group();
@@ -165,7 +167,7 @@ function SimpleGraph(target, labels, data) {
     // Plot the points
     for (var i = 0, ii = this.labels.length; i < ii; i++) {
         var y = Math.round(this.settings.height - this.settings.bottomGutter - this.Y * this.data[i]),
-            x = Math.round(this.settings.leftGutter + this.X * (i + .5));
+            x = Math.round(this.settings.leftGutter + this.X * (i + this.settings.mysteryFactor));
         if (this.settings.drawPoints) {
           var dot  = dots.circle(x, y, this.settings.pointRadius).attr({fill: this.settings.pointColor, stroke: "#fff"});
         }

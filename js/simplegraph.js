@@ -26,8 +26,8 @@ function SimpleGraph(target, labels, data) {
     topGutter: 20,
     // Label Style
     labelColor: "#000",
-    labelFont: "Arial",
-    labelFontSize: "9px",
+    labelFont: "Verdana",
+    labelFontSize: "10px",
     // Grid Style
     gridBorderColor: "#ccc",
     // -- Y Axis Captions
@@ -52,8 +52,6 @@ function SimpleGraph(target, labels, data) {
     fillOpacity: 0.2,
     // -- Hover
     addHover: true,
-    // Mystery Factor - originally hardcoded to .5 throughout code, need to talk to Dmitry to demystify
-    mysteryFactor: 0
   }, (arguments[3] || {}) );
 
 
@@ -61,15 +59,6 @@ function SimpleGraph(target, labels, data) {
   
   // Draw a grid to paint points over
   this.drawGrid = function() {
-    this.changeYAxis();
-
-    // It's assumed that the X Axis remains static over multiple values of Y, so this code stays where it is
-    this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;
-    this.leftGridEdge = this.settings.leftGutter + this.X * this.settings.mysteryFactor;
-    this.topGridEdge  = this.settings.topGutter;
-    this.gridWidth    = this.settings.width - this.settings.leftGutter - this.X;
-    this.columns      = this.labels.length - 1; 
-            
     r.drawGrid(
       this.leftGridEdge, 
       this.topGridEdge, 
@@ -79,30 +68,26 @@ function SimpleGraph(target, labels, data) {
       this.rows, 
       this.settings.gridBorderColor
     );
-    
-    // Label the X axis
-    this.addXAxisLabels(this.labels);
   };
 
-  this.plotAdditionalDataSet = function(data, options) {
-    this.data                   = data;
-    this.settings.minYAxisValue = options.minYAxisValue;
-    this.settings.penColor      = options.penColor;
-    this.settings.yAxisCaption  = options.yAxisCaption;
-    this.settings.units         = options.units;
-    this.setPenColor();
-    this.changeYAxis();
-    this.addYAxisLabels();
-    this.plot();
+  this.setXAxis = function() {
+    this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;    
   };
 
   // Change the Y axis scale based on either the maximum value in the data array, or the maxOveride, whichever is higher. 
-  this.changeYAxis = function() {
+  this.setYAxis = function() {
     this.gridHeight    = this.settings.height - this.settings.topGutter - this.settings.bottomGutter;
     this.maxValueYAxis = this.calculateMaxYAxis();
     this.Y             = this.gridHeight / this.maxValueYAxis;
-    this.rows          = this.maxValueYAxis / 2; //TODO PARAM - steps per row
   };
+
+  this.setGridDimensions = function() {
+    this.leftGridEdge = this.settings.leftGutter;
+    this.topGridEdge  = this.settings.topGutter;
+    this.gridWidth    = this.settings.width - this.settings.leftGutter - this.X;
+    this.columns      = this.labels.length - 1; 
+    this.rows         = this.maxValueYAxis / 2; //TODO PARAM - steps per row    
+  }
 
   // Determine the maximum value of the Y Axis
    this.calculateMaxYAxis = function() {
@@ -114,8 +99,20 @@ function SimpleGraph(target, labels, data) {
     return max;
   };
 
+  this.plotAdditionalDataSet = function(data, options) {
+    this.data                   = data;
+    this.settings.minYAxisValue = options.minYAxisValue;
+    this.settings.penColor      = options.penColor;
+    this.settings.yAxisCaption  = options.yAxisCaption;
+    this.settings.units         = options.units;
+    this.setPenColor();
+    this.setYAxis();
+    this.labelYAxis();
+    this.plot();
+  };
+
   // Add labels to the Y Axis
-  this.addYAxisLabels = function() {
+  this.labelYAxis = function() {
     // Legend
     r.rect(
       this.leftGridEdge - (30 + this.settings.yAxisOffset), //TODO PARAM - Label Colum Width
@@ -139,9 +136,9 @@ function SimpleGraph(target, labels, data) {
     this.settings.yAxisOffset = this.settings.yAxisOffset + 30;
   };
   
-  this.addXAxisLabels = function() {
+  this.labelXAxis = function() {
     for (var i = 0, ii = this.labels.length; i < ii; i++) {
-        var x = this.settings.leftGutter + this.X * (i + this.settings.mysteryFactor),
+        var x = this.settings.leftGutter + this.X * i,
             t = r.text(x, this.settings.height - 6, this.labels[i]).attr(this.xAxisLabelStyle).toBack();
     }
   };
@@ -157,7 +154,7 @@ function SimpleGraph(target, labels, data) {
     
     // Fill path
     var bgp = r.path({stroke: "none", fill: this.settings.fillColor, opacity: this.settings.fillOpacity})
-                .moveTo(this.settings.leftGutter + this.X * this.settings.mysteryFactor, this.settings.height - this.settings.bottomGutter);
+                .moveTo(this.settings.leftGutter, this.settings.height - this.settings.bottomGutter);
 
     var bars  = r.group(),
         dots  = r.group(),
@@ -171,7 +168,7 @@ function SimpleGraph(target, labels, data) {
     // Plot the points
     for (var i = 0, ii = this.labels.length; i < ii; i++) {
         var y = this.settings.height - this.settings.bottomGutter - this.Y * this.data[i],
-            x = this.settings.leftGutter + this.X * (i + this.settings.mysteryFactor);
+            x = this.settings.leftGutter + this.X * i;
 
         if (this.settings.drawPoints) {
           var dot  = dots.circle(x, y, this.settings.pointRadius).attr({fill: this.settings.pointColor, stroke: "#fff"});
@@ -322,9 +319,13 @@ function SimpleGraph(target, labels, data) {
   
   this.setStyleDefaults();
   this.setPenColor();
+  this.setXAxis();
+  this.setYAxis();
+  this.setGridDimensions();  
   this.drawGrid();
+  this.labelXAxis(this.labels);
   if (this.settings.yAxisCaption) {
-    this.addYAxisLabels();
+    this.labelYAxis();
   }
   this.plot();
 }

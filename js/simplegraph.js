@@ -18,6 +18,7 @@ function SimpleGraph(target, labels, data) {
   this.data = data;
 
   this.settings = $.extend({
+    autoDraw: true,
     // Dimensions
     width: 600,
     height: 250,
@@ -99,7 +100,7 @@ function SimpleGraph(target, labels, data) {
     return max;
   };
 
-  this.plotAdditionalDataSet = function(data, options) {
+  this.newDataSet = function(data, options) {
     this.data                   = data;
     this.settings.minYAxisValue = options.minYAxisValue;
     this.settings.penColor      = options.penColor;
@@ -107,8 +108,10 @@ function SimpleGraph(target, labels, data) {
     this.settings.units         = options.units;
     this.setPenColor();
     this.setYAxis();
-    this.labelYAxis();
-    this.plot();
+    if (this.settings.autoDraw) {
+      this.labelYAxis();
+      this.plot();      
+    }
   };
 
   // Add labels to the Y Axis
@@ -316,16 +319,19 @@ function SimpleGraph(target, labels, data) {
       this.settings.barColor   = this.settings.penColor;
     }
   };
-  
+
   this.setStyleDefaults();
   this.setPenColor();
   this.setXAxis();
   this.setYAxis();
   this.setGridDimensions();  
-  this.drawGrid();
-  this.labelXAxis(this.labels);
-  if (this.settings.yAxisCaption) {
-    this.labelYAxis();
+
+  if (this.settings.autoDraw) {
+    this.drawGrid();
+    this.labelXAxis(this.labels);
+    if (this.settings.yAxisCaption) {
+      this.labelYAxis();
+    }
+    this.plot();    
   }
-  this.plot();
 }

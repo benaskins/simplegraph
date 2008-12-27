@@ -139,7 +139,7 @@
       <h3>Combined Temperature / Rain </h3>
       <pre>var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
   {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
-combined_graph.plotAdditionalDataSet(rain_data, 
+combined_graph.newDataSet(rain_data, 
   {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})</pre>                
       <div id='combined_graph_holder'></div>                  
       

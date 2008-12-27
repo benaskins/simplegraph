@@ -32,7 +32,7 @@ $(document).ready(function () {
   // - Combined Graph - plots two data sets with different scales on the one graph
   var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
     {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
-  combined_graph.plotAdditionalDataSet(rain_data, 
+  combined_graph.newDataSet(rain_data, 
     {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
   // - Bar Temperature Graph - adds colour, fill, and a minimum value for the y axis
   var bar_temp_graph = new SimpleGraph("bar_graph_holder", temp_labels, temp_data, 

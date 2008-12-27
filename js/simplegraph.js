@@ -72,7 +72,7 @@ function SimpleGraph(target, labels, data) {
   };
 
   this.setXAxis = function() {
-    this.X            = (this.settings.width - this.settings.leftGutter) / this.labels.length;    
+    this.X = (this.settings.width - this.settings.leftGutter) / this.labels.length;    
   };
 
   // Change the Y axis scale based on either the maximum value in the data array, or the maxOveride, whichever is higher. 
@@ -88,7 +88,7 @@ function SimpleGraph(target, labels, data) {
     this.gridWidth    = this.settings.width - this.settings.leftGutter - this.X;
     this.columns      = this.labels.length - 1; 
     this.rows         = this.maxValueYAxis / 2; //TODO PARAM - steps per row    
-  }
+  };
 
   // Determine the maximum value of the Y Axis
    this.calculateMaxYAxis = function() {
@@ -223,7 +223,7 @@ function SimpleGraph(target, labels, data) {
     if (this.settings.fillUnderLine) {
       bgp.lineTo(x, this.settings.height - this.settings.bottomGutter).andClose();      
     }
-    frame.toFront();
+    frame.toFront();    
   };
 
   this.setStyleDefaults = function() {
@@ -334,4 +334,5 @@ function SimpleGraph(target, labels, data) {
     }
     this.plot();    
   }
+
 }

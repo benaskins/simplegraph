@@ -120,6 +120,12 @@
       <pre>var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);</pre>
       <div id='simplest_graph_holder'></div>
 
+      <h3>Temperature in 7 days bar graph (with color, and min y-axis value)</h3>
+      <pre>var bar_temp_graph = new SimpleGraph("bar_graph_holder", temp_labels, temp_data, 
+  {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false});
+      </pre>
+      <div id='bar_graph_holder'></div>
+
       <h3>Temperature in 7 days (with color, fill, and min y-axis value)</h3>
       <pre>var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
   {penColor: "#f00", fillUnderLine: true, units: "ºC", minYAxisValue: 30});</pre>
@@ -136,6 +142,7 @@
 combined_graph.plotAdditionalDataSet(rain_data, 
   {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})</pre>                
       <div id='combined_graph_holder'></div>                  
+      
     </div>
   </body>
 </html>

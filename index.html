@@ -23,6 +23,14 @@
       h1, h2, h3 {
         font-family: verdana;
       }
+      a {
+        text-decoration: none;
+        background-color: #ffc;
+        color: #000;
+      }
+      a:hover {
+        background-color: yellow;
+      }
     </style>
   </head>
   <body>
@@ -31,7 +39,7 @@
     </a>
     <div id='container'>
       <h1>SimpleGraph</h1>
-      <p>Simple javascript line graphs using Raphael and jQuery. Find me, download me, or fork me at <a href="http://github.com/benaskins/simplegraph">github</a>. Hopefully the following examples speak for themselves...</p>
+      <h2>Simple javascript line graphs using <a href="http://raphaeljs.com/">Raphael</a> and <a href="http://jquery.com/">jQuery</a>. Find me, download me, or fork me at <a href="http://github.com/benaskins/simplegraph">github</a>. The following examples should speak for themselves...</h2>
       <div id='temp-data'>
         <table cellspacing='0' class='graph' summary='Temperature in 7 days'>
           <caption>Temperature in 7 days</caption>
@@ -142,7 +150,6 @@
 combined_graph.plotAdditionalDataSet(rain_data, 
   {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})</pre>                
       <div id='combined_graph_holder'></div>                  
-      
     </div>
   </body>
 </html>

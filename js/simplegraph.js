@@ -237,87 +237,30 @@ function SimpleGraph(target, labels, data) {
 
   this.setStyleDefaults = function() {
     // X and Y axis labels and captions default to global style if not provided
-    // - X Axis Labels
-    if (!this.settings.xAxisLabelColor) {
-      this.settings.xAxisLabelColor = this.settings.labelColor;
+    var targets = ["xAxisLabel", "yAxisLabel", "yAxisCaption", "hoverLabel", "hoverValue"]
+    var types   = ["Color", "Font", "FontSize"]
+
+    for each (target in targets) {
+      for each (type in types) {
+        if (!this.settings[target + type]) {
+          this.settings[target + type] = this.settings["label" + type];
+        }
+      }
     }
-    if (!this.settings.xAxisLabelFont) {
-      this.settings.xAxisLabelFont = this.settings.labelFont;
-    }
-    if (!this.settings.xAxisLabelFontSize) {
-      this.settings.xAxisLabelFontSize = this.settings.labelFontSize;
-    }
-    // - Y Axis Labels
-    if (!this.settings.yAxisLabelColor) {
-      this.settings.yAxisLabelColor = this.settings.labelColor;
-    }
-    if (!this.settings.yAxisLabelFont) {
-      this.settings.yAxisLabelFont = this.settings.labelFont;
-    }
-    if (!this.settings.yAxisLabelFontSize) {
-      this.settings.yAxisLabelFontSize = this.settings.labelFontSize;
-    }
-    // - Y Axis Caption
-    if (!this.settings.yAxisCaptionColor) {
-      this.settings.yAxisCaptionColor = this.settings.labelColor;
-    }
-    if (!this.settings.yAxisCaptionFont) {
-      this.settings.yAxisCaptionFont = this.settings.labelFont;
-    }
-    if (!this.settings.yAxisCaptionFontSize) {
-      this.settings.yAxisCaptionFontSize = this.settings.labelFontSize;
-    }
-    // - Hover Labels - Labels from the X Axis that appear when hovering over points in the graph
-    if (!this.settings.hoverLabelColor) {
-      this.settings.hoverLabelColor = this.settings.labelColor;
-    }
-    if (!this.settings.hoverLabelFont) {
-      this.settings.hoverLabelFont = this.settings.labelFont;
-    }
-    if (!this.settings.hoverLabelFontSize) {
-      this.settings.hoverLabelFontSize = this.settings.labelFontSize;
-    }
-    // - Hover Values - Values from the Y Axis that appear when hovering over points in the graph
-    if (!this.settings.hoverValueColor) {
-      this.settings.hoverValueColor = this.settings.labelColor;
-    }
-    if (!this.settings.hoverValueFont) {
-      this.settings.hoverValueFont = this.settings.labelFont;
-    }
-    if (!this.settings.hoverValueFontSize) {
-      this.settings.hoverValueFontSize = this.settings.labelFontSize;
-    }
+
     // Label Styles
     // - General
     this.labelStyle = {
       font: this.settings.labelFontSize + '"' + this.settings.labelFont + '"', 
       fill: this.settings.labelColor
     };
-    // - X Axis Labels
-    this.xAxisLabelStyle = {
-      font: this.settings.xAxisLabelFontSize + '"' + this.settings.xAxisLabelFont + '"', 
-      fill: this.settings.xAxisLabelColor
-    };
-    // - Y Axis Labels
-    this.yAxisLabelStyle = {
-      font: this.settings.yAxisLabelFontSize + '"' + this.settings.yAxisLabelFont + '"', 
-      fill: this.settings.yAxisLabelColor
-    };
-    // - Y Axis Caption
-    this.yAxisCaptionStyle = {
-      font: this.settings.yAxisCaptionFontSize + '"' + this.settings.yAxisCaptionFont + '"', 
-      fill: this.settings.yAxisCaptionColor
-    };
-    // - Hover Labels
-    this.hoverLabelStyle = {
-      font: this.settings.hoverLabelFontSize + '"' + this.settings.hoverLabelFont + '"', 
-      fill: this.settings.hoverLabelColor
-    };
-    // - Hover Values
-    this.hoverValueStyle = {
-      font: this.settings.hoverValueFontSize + '"' + this.settings.hoverValueFont + '"', 
-      fill: this.settings.hoverValueColor
-    };    
+
+    for each (target in targets) {
+      this[target + "Style"] = {
+        font: this.settings[target + "FontSize"] + '"' + this.settings[target + "Font"] + '"', 
+        fill: this.settings[target + "Color"]
+      };
+    }
   };
   
   this.setPenColor = function() {

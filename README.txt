@@ -74,6 +74,7 @@ Ben Askins took that example and created the SimpleGraph function
 Lachie Cox improved sample code
 Lachlan Hardy removed lint
 Martin Stannard added bar graphs
+Colin Campbell-McPherson eliminated repetition from setStyleDefaults
 
 Fork it on github: http://github.com/benaskins/simplegraph
 

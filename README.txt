@@ -8,6 +8,13 @@ Simple cross-browser javascript graphs using Raphael and jQuery.
 
 Based on the Raphael analytics example (http://raphaeljs.com/analytics.html) by Dmitry Baranovskiy 
 
+== Disclaimer
+
+SimpleGraph is immature. If you stretch it much beyond the few simple examples you may run into one or two quirks. 
+One glaring issue is the inability to plot negative values on the y-axis, well, to be fair, they do get plotted, but 
+not anywhere visible on the page :) I hope to address this soon. But if you get there first, please fork, fix, and 
+send pull requests. 
+
 == Usage
 
 The SimpleGraph function takes four arguments:
@@ -26,7 +33,7 @@ Will render a graph that looks a little something like this (open index.html for
   |   ._.
   | ./   \.
   |/       \.
-  |____________
+  |__________
   a b c d e f
 
 == Options

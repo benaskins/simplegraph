@@ -19,6 +19,7 @@ function SimpleGraph(target, labels, data) {
 
   this.settings = $.extend({
     autoDraw: true,
+    units: "",
     // Dimensions
     width: 600,
     height: 250,
@@ -197,7 +198,7 @@ function SimpleGraph(target, labels, data) {
         if (this.settings.addHover) {
           var rect = r.rect(x - 50, y - 50, 100, 100).attr({stroke: "none", fill: "#fff", opacity: 0}); //TODO PARAM - hover target width / height
           // Dmitry's animation magic
-          (function addHoverAnimation(x, y, data, lbl, dot, settings) {
+          (function addHoverAnimation(x, y, data, lbl, dot, settings, units) {
             var timer, i = 0;
             $(rect[0]).hover(function () {
                 clearTimeout(leave_timer);
@@ -206,7 +207,7 @@ function SimpleGraph(target, labels, data) {
                     newcoord.x -= 114;
                 }
                 frame.show().animateTo(newcoord.x, newcoord.y, (is_label_visible ? 100 : 0));
-                label[0].attr({text: (data + settings.units)}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 15, (is_label_visible ? 100 : 0));
+                label[0].attr({text: (data + units)}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 15, (is_label_visible ? 100 : 0));
                 label[1].attr({text: lbl}).show().animateTo(newcoord.x * 1 + 50, newcoord.y * 1 + 30, (is_label_visible ? 100 : 0));
                 if (settings.drawPoints) {
                   dot.attr("r", settings.activePointRadius);
@@ -226,7 +227,7 @@ function SimpleGraph(target, labels, data) {
                     r.safari();
                 }, 1);
             });    
-          })(x, y, this.data[i], this.labels[i], dot, this.settings);          
+          })(x, y, this.data[i], this.labels[i], dot, this.settings, this.settings.units);          
         }
     }
     if (this.settings.fillUnderLine) {
@@ -286,5 +287,4 @@ function SimpleGraph(target, labels, data) {
     }
     this.plot();    
   }
-
 }

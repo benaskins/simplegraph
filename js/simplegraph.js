@@ -105,8 +105,9 @@ function SimpleGraph(target, labels, data) {
 
   this.newDataSet = function(data, options) {
     this.data     = data;
-    this.settings = $.extend(this.settings, options);
+    this.settings.penColor = options.penColor;
     this.setPenColor();
+    this.settings = $.extend(this.settings, options);
     this.setYAxis();
     if (this.settings.autoDraw) {
       this.labelYAxis();

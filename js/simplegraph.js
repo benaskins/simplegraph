@@ -104,11 +104,8 @@ function SimpleGraph(target, labels, data) {
   };
 
   this.newDataSet = function(data, options) {
-    this.data                   = data;
-    this.settings.minYAxisValue = options.minYAxisValue;
-    this.settings.penColor      = options.penColor;
-    this.settings.yAxisCaption  = options.yAxisCaption;
-    this.settings.units         = options.units;
+    this.data     = data;
+    this.settings = $.extend(this.settings, options);
     this.setPenColor();
     this.setYAxis();
     if (this.settings.autoDraw) {

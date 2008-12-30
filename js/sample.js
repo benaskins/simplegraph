@@ -36,6 +36,6 @@ $(document).ready(function () {
     {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
   // - Bar Temperature Graph - adds colour, fill, and a minimum value for the y axis
   var bar_temp_graph = new SimpleGraph("bar_graph_holder", temp_labels, temp_data, 
-    {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false});
+    {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false, drawGrid: false, barWidth: 20});
 
 });

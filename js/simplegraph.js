@@ -19,6 +19,7 @@ function SimpleGraph(target, labels, data) {
 
   this.settings = $.extend({
     autoDraw: true,
+    drawGrid: true,
     units: "",
     // Dimensions
     width: 600,
@@ -48,6 +49,7 @@ function SimpleGraph(target, labels, data) {
     // -- Bars
     drawBars: false,
     barColor: "#000",
+    barWidth: 10,
     // -- Fill
     fillUnderLine: false,
     fillColor: "#000",
@@ -187,7 +189,7 @@ function SimpleGraph(target, labels, data) {
           var dot  = dots.circle(x, y, this.settings.pointRadius).attr({fill: this.settings.pointColor, stroke: "#fff"});
         }
         if (this.settings.drawBars) {
-          bars.rect(x - 5, y, 10, (this.settings.height - this.settings.bottomGutter) - y).attr({fill: this.settings.barColor, stroke: "#888"});
+          bars.rect(x, y, this.settings.barWidth, (this.settings.height - this.settings.bottomGutter) - y).attr({fill: this.settings.barColor, stroke: "none"});
         }
         if (this.settings.drawLine) {
           path[i == 0 ? "moveTo" : "cplineTo"](x, y, 10);
@@ -280,11 +282,13 @@ function SimpleGraph(target, labels, data) {
   this.setGridDimensions();  
 
   if (this.settings.autoDraw) {
-    this.drawGrid();
-    this.labelXAxis(this.labels);
+    if (this.settings.drawGrid) {
+      this.drawGrid();      
+    }
     if (this.settings.yAxisCaption) {
       this.labelYAxis();
     }
+    this.labelXAxis(this.labels);
     this.plot();    
   }
 }

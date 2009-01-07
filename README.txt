@@ -4,7 +4,7 @@ http://benaskins.github.com/simplegraph
 
 == Description
 
-Simple cross-browser javascript graphs using Raphael and jQuery. 
+Simple javascript graphs using Raphael and jQuery. 
 
 Based on the Raphael analytics example (http://raphaeljs.com/analytics.html) by Dmitry Baranovskiy 
 
@@ -26,7 +26,7 @@ The SimpleGraph function takes four arguments:
   
 Simple example:
 
-  var simplest_graph = new SimpleGraph("myGraph", [1,2,3,3,2,1], ["a","b","c","d","e","f"]);
+  $("#myGraph").simplegraph([1,2,3,3,2,1], ["a","b","c","d","e","f"]);
   
 Will render a graph that looks a little something like this (open index.html for actual rendered samples):
 
@@ -38,7 +38,7 @@ Will render a graph that looks a little something like this (open index.html for
 
 == Options
 
-SimpleGraph takes a hash of options as it's fourth argument. Here's what you can customise:
+SimpleGraph takes a hash of options as it's third argument. Here's what you can customise:
 
   eg. parameter:: [default] description
 

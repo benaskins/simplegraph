@@ -2,27 +2,35 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
   <head>
-    <title>SimpleGraph - simple javascript line graphs with Raphael and jQuery</title>
-    <script src="js/vendor/jquery.js" type="text/javascript"></script>
-    <script src="js/vendor/raphael.js" type="text/javascript"></script>
-    <script src="js/simplegraph.js" type="text/javascript"></script>
-    <script src="js/sample.js" type="text/javascript"></script>
+    <title>SimpleGraph - simple javascript graphs with Raphael and jQuery</title>
+    <script src="vendor/jquery.js" type="text/javascript"></script>
+    <script src="vendor/raphael.js" type="text/javascript"></script>
+    <script src="jquery.simplegraph.js" type="text/javascript"></script>
+    <script src="sample.js" type="text/javascript"></script>
     <style type="text/css">
       #container {
-        width: 900px;
-        margin: auto;
+        margin:auto;
+        width:900px;
       }
       pre {
-        width: 800px;
-        border: 4px solid #ddd;
-        background: #eee;
-        padding: 5px;
-        overflow: auto;
-        line-height: 20px;
+        background:#EEEEEE none repeat scroll 0 0;
+        border:4px solid #DDDDDD;
+        line-height:20px;
+        overflow:auto;
+        padding:5px;
+        width:800px;
       }
       h1, h2, h3 {
-        font-family: verdana;
+        font-family:verdana;
       }
+      a {
+        background-color:#FFFFCC;
+        color:#000000;
+        text-decoration:none;
+      }
+      a:hover {
+        background-color:yellow;
+      }    
     </style>
   </head>
   <body>
@@ -31,7 +39,11 @@
     </a>
     <div id='container'>
       <h1>SimpleGraph</h1>
-      <p>Simple javascript line graphs using Raphael and jQuery. Find me, download me, or fork me at <a href="http://github.com/benaskins/simplegraph">github</a>. Hopefully the following examples speak for themselves...</p>
+      <h2>
+        Simple javascript line graphs using <a href="http://raphaeljs.com/">Raphael</a> and
+        <a href="http://jquery.com/">jQuery</a>. Find me, download me, or fork me at
+        <a href="http://github.com/benaskins/simplegraph">github</a>. The following examples should speak for themselves...        
+      </h2>
       <div id='temp-data'>
         <table cellspacing='0' class='graph' summary='Temperature in 7 days'>
           <caption>Temperature in 7 days</caption>
@@ -117,31 +129,31 @@
       </div>
 
       <h3>Simplest Graph (no customisation)</h3>
-      <pre>var temp_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);</pre>
+      <pre>$("#simplest_graph_holder").simplegraph(temp_data, temp_labels);</pre>
       <div id='simplest_graph_holder'></div>
 
-      <h3>Temperature in 7 days bar graph (with color, and min y-axis value)</h3>
-      <pre>var bar_temp_graph = new SimpleGraph("bar_graph_holder", temp_labels, temp_data, 
-  {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false});
-      </pre>
-      <div id='bar_graph_holder'></div>
-
       <h3>Temperature in 7 days (with color, fill, and min y-axis value)</h3>
-      <pre>var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
+      <pre>$("#temp_graph_holder").simplegraph(temp_data, temp_labels,
   {penColor: "#f00", fillUnderLine: true, units: "ºC", minYAxisValue: 30});</pre>
       <div id='temp_graph_holder'></div>
       
       <h3>Rain in 7 days (with y-axis labels)</h3>
-      <pre>var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data,
+      <pre>$("#rain_graph_holder").simplegraph(rain_data, rain_labels,
   {penColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});</pre>
       <div id='rain_graph_holder'></div>
       
       <h3>Combined Temperature / Rain </h3>
-      <pre>var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
-  {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
-combined_graph.newDataSet(rain_data, 
-  {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"})</pre>                
+      <pre>$("#combined_graph_holder").simplegraph(temp_data, temp_labels,
+  {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"})
+    .simplegraph.more(rain_data, 
+      {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});</pre>                
       <div id='combined_graph_holder'></div>                  
+
+      <h3>Temperature in 7 days bar graph (with color, and min y-axis value)</h3>
+      <pre>$("#bar_graph_holder").simplegraph(temp_data, temp_labels,
+  {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false, drawGrid: false, barWidth: 20});</pre>
+      <div id='bar_graph_holder'></div>
+
       
     </div>
   </body>

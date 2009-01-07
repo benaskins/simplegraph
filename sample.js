@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
 
   // Get the data
   var temp_labels = [], temp_data = [];
@@ -22,20 +22,23 @@ $(document).ready(function () {
 
   // Plot the data
   // - Simplest Possible Graph - no customisations
-  var simplest_graph = new SimpleGraph("simplest_graph_holder", temp_labels, temp_data);
+  $("#simplest_graph_holder").simplegraph(temp_data, temp_labels);
+  
   // - Temperature Graph - adds colour, fill, and a minimum value for the y axis
-  var temp_graph = new SimpleGraph("temp_graph_holder", temp_labels, temp_data, 
+  $("#temp_graph_holder").simplegraph(temp_data, temp_labels,
     {penColor: "#f00", fillUnderLine: true, units: "ºC", minYAxisValue: 30});
+
   // - Rain Graph - adds a caption to the y axis
-  var rain_graph = new SimpleGraph("rain_graph_holder", rain_labels, rain_data,
-    {penColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
+  $("#rain_graph_holder").simplegraph(rain_data, rain_labels,
+    {penColor: "#00f", units: "mm", leftGutter: 60, minYAxisValue: 10, yAxisCaption: "Max Rainfall", yAxisLabelFont: "Times New Roman"});
+
   // - Combined Graph - plots two data sets with different scales on the one graph
-  var combined_graph = new SimpleGraph("combined_graph_holder", temp_labels, temp_data,
-    {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"});
-  combined_graph.newDataSet(rain_data, 
-    {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
+  $("#combined_graph_holder").simplegraph(temp_data, temp_labels,
+    {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"})
+    .simplegraph.more(rain_data, {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});
+
   // - Bar Temperature Graph - adds colour, fill, and a minimum value for the y axis
-  var bar_temp_graph = new SimpleGraph("bar_graph_holder", temp_labels, temp_data, 
+  $("#bar_graph_holder").simplegraph(temp_data, temp_labels,
     {penColor: "#f00", units: "ºC", minYAxisValue: 30, drawBars: true, drawLine: false, drawPoints: false, drawGrid: false, barWidth: 20});
 
 });

@@ -52,8 +52,6 @@ function SimpleGraph(data, labels, canvas, settings) {
       };
     });
   }
-
-
 }
 
 // Holds the data and labels to be plotted, provides methods for labelling the x and y axes,

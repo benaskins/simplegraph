@@ -124,10 +124,10 @@ function DataSet(data, labels, settings) {
           bars.rect(x + dataSet.settings.barOffset, y, dataSet.settings.barWidth, (dataSet.settings.height - dataSet.settings.bottomGutter) - y).attr({fill: dataSet.settings.barColor, stroke: "none"});
         }
         if (dataSet.settings.drawLine) {
-          line_path[i == 0 ? "moveTo" : "cplineTo"](x, y, 10);
+          line_path[i == 0 ? "moveTo" : "lineTo"](x, y, 10);
         }
         if (dataSet.settings.fillUnderLine) {
-          fill_path[i == 0 ? "lineTo" : "cplineTo"](x, y, 10);
+          fill_path[i == 0 ? "lineTo" : "lineTo"](x, y, 10);
         }
         if (dataSet.settings.addHover) {
           var rect = canvas.rect(x - 50, y - 50, 100, 100).attr({stroke: "none", fill: "#fff", opacity: 0}); //TODO PARAM - hover target width / height

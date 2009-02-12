@@ -97,7 +97,6 @@
     },
     
     draw: function() {
-      this.settings.minYAxisValue = maxWaveHeight();
       this.drawBackground();
       this.drawYAxisSightLines();
       this.dataSet.labelXAxis(this.grid, this.canvas);
@@ -147,7 +146,7 @@
     gatherData();
     $(".swellgraph .chart").each( function() {
       var canvas = Raphael(this, 300, 330);
-      var swellchart = new SimpleGraph(wave_height_am, forecast_day, canvas, $.extend({}, $.fn.simplegraph.defaults, SwellChart.defaults));
+      var swellchart = new SimpleGraph(wave_height_am, forecast_day, canvas, $.extend({minYAxisValue: maxWaveHeight()}, $.fn.simplegraph.defaults, SwellChart.defaults));
       $.extend(swellchart, SwellChart);
       swellchart.draw();
     });

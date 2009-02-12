@@ -19,6 +19,15 @@ function SimpleGraph(data, labels, canvas, settings) {
     this.dataSet.plot(this.grid, this.canvas);
   };
 
+  this.replaceDataSet = function(dataSet) {
+    this.dataSet = new DataSet(dataSet, dataSet.labels, this.settings);
+    this.grid    = new Grid(this.dataSet, this.settings);
+  };
+  
+  this.plotCurrentDataSet = function() {
+    this.dataSet.plot(this.grid, this.canvas);          
+  };
+
   function setStyleDefaults(settings) {
     var targets = ["xAxisLabel", "yAxisLabel", "yAxisCaption", "hoverLabel", "hoverValue"];
     var types   = ["Color", "Font", "FontSize", "FontWeight"];

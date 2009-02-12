@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>SimpleGraph - simple javascript graphs with Raphael and jQuery</title>
+    <script src="../vendor/jquery.js" type="text/javascript"></script>
+    <script src="../vendor/raphael.js" type="text/javascript"></script>
+    <script src="../jquery.simplegraph.js" type="text/javascript"></script>
+    <script src="swellchart.js" type="text/javascript"></script>
+    <style type="text/css">
+      #container {
+        margin:auto;
+        width:900px;
+      }
+      .chart {
+        margin: 50px;
+      }
+      pre {
+        background:#EEEEEE none repeat scroll 0 0;
+        border:4px solid #DDDDDD;
+        line-height:20px;
+        overflow:auto;
+        padding:5px;
+        width:800px;
+      }
+      h1, h2, h3 {
+        font-family:verdana;
+      }
+      a {
+        background-color:#FFFFCC;
+        color:#000000;
+        text-decoration:none;
+      }
+      a:hover {
+        background-color:yellow;
+      }    
+    </style>
+  </head>
+  <body>
+    <a href="http://github.com/benaskins/simplegraph">
+    <img alt="Fork me on GitHub" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" style="border: 0pt none ; position: absolute; top: 0pt; right: 0pt;"/>
+    </a>
+    <div id='container'>
+      <h1>SimpleGraph - Swell Chart Example</h1>
+      <h2>
+        Using SimpleGraph to create more sophisticated graphs. See below for the sample code.
+      </h2>
+      <div class="swellgraph">
+        <table class="swelldata" style="display: none;">
+          <tbody><tr>
+            <td class="forecast_day">Fri</td>
+            <td class="wave_height_am">1.5</td>
+            <td class="wave_height_pm">2</td>
+            <td class="wind_direction_am">w</td>
+            <td class="wind_direction_pm">wsw</td>
+            <td class="swell_direction">wnw</td>
+          </tr>
+          <tr>
+            <td class="forecast_day">Sat</td>
+            <td class="wave_height_am">3</td>
+            <td class="wave_height_pm">3</td>
+            <td class="wind_direction_am">wnw</td>
+            <td class="wind_direction_pm">wnw</td>
+            <td class="swell_direction">wsw</td>
+          </tr>
+          <tr>
+            <td class="forecast_day">Sun</td>
+            <td class="wave_height_am">2</td>
+            <td class="wave_height_pm">4</td>
+            <td class="wind_direction_am">sw</td>
+            <td class="wind_direction_pm">sw</td>
+            <td class="swell_direction">sw</td>
+          </tr>
+          <tr>
+            <td class="forecast_day">Mon</td>
+            <td class="wave_height_am">2.5</td>
+            <td class="wave_height_pm">3.5</td>
+            <td class="wind_direction_am">wnw</td>
+            <td class="wind_direction_pm">wsw</td>
+            <td class="swell_direction">w</td>
+          </tr>
+          <tr>
+            <td class="forecast_day">Tue</td>
+            <td class="wave_height_am">4</td>
+            <td class="wave_height_pm">4.5</td>
+            <td class="wind_direction_am">w</td>
+            <td class="wind_direction_pm">wsw</td>
+            <td class="swell_direction">wsw</td>
+          </tr>
+        </tbody></table>
+        <div class="chart">&nbsp;</div>
+      </div>
+      <pre>
+        (function($) {
+
+          $(function() {
+
+            var wave_height_am    = [], 
+                wave_height_pm    = [],
+                swell_direction   = [],
+                wind_direction_am = [],
+                wind_direction_pm = [],
+                forecast_day      = [];
+
+            $("table.swelldata td.wave_height_am").each(function () {
+                wave_height_am.push($(this).html());
+            });
+
+            $("table.swelldata td.wave_height_pm").each(function () {
+                wave_height_pm.push($(this).html());
+            });
+
+            $("table.swelldata td.swell_direction").each(function () {
+                swell_direction.push($(this).html());
+            });
+
+            $("table.swelldata td.wind_direction_am").each(function () {
+                wind_direction_am.push($(this).html());
+            });
+
+            $("table.swelldata td.wind_direction_pm").each(function () {
+                wind_direction_pm.push($(this).html());
+            });
+
+            $("table.swelldata td.forecast_day").each(function () {
+                forecast_day.push($(this).html());
+            });
+
+            var max_wave_height = Math.ceil(Math.max.apply(Math, wave_height_am.concat(wave_height_pm)));
+
+            $(".swellgraph .chart").each( function() {
+
+              var settings = setDefaults();
+
+              settings.minYAxisValue = max_wave_height;
+
+              // Create the raphael canvas
+              var canvas = Raphael(this, 300, 330);
+
+              // Draw the grey-background rectangle
+              canvas.rect(0, 0, 300, 330).attr({stroke: "none", fill: "#eaeaea"});
+
+              // Create the simplegraph 
+              var simplegraph = new SimpleGraph(wave_height_am, forecast_day, canvas, settings);
+
+              // Draw the sight lines
+              drawYAxisSightLines(simplegraph, canvas);
+
+              // Plot the am wave heights
+              simplegraph.draw();
+              addAmPmIndicators(simplegraph, canvas, "am");
+
+              // Plot the pm wave heights
+              settings.barOffset = settings.barWidth;
+              settings.barColor = "#fff";
+              simplegraph.dataSet = new DataSet(wave_height_pm, forecast_day, settings);
+              simplegraph.grid = new Grid(simplegraph.dataSet, settings);
+              simplegraph.dataSet.plot(simplegraph.grid, canvas);          
+              addAmPmIndicators(simplegraph, canvas, "pm");
+
+              // Label the y axis using a custom function
+              labelYAxis(simplegraph, canvas);
+
+              // Add the swell direction rectangle
+              canvas.rect(simplegraph.grid.leftEdge, 225, 285 - simplegraph.grid.leftEdge, 40).attr({stroke: "none", fill: "#fff"});
+              canvas.image("images/chart-swell.gif", simplegraph.grid.leftEdge - 15, 230, 8, 27);
+
+              plotSwellDirection(simplegraph, canvas, swell_direction);
+
+              // Add the wind direction rectangle
+              canvas.rect(simplegraph.grid.leftEdge, 275, 285 - simplegraph.grid.leftEdge, 40).attr({stroke: "none", fill: "#fff"});
+              canvas.image("images/chart-wind.gif", simplegraph.grid.leftEdge - 15, 285, 8, 19);
+
+              plotWindDirection(simplegraph, canvas, wind_direction_am, 2);
+              plotWindDirection(simplegraph, canvas, wind_direction_pm, 22);      
+            });
+
+            // Hide the data
+            $(".swellgraph table").hide();  
+          });
+
+          function setDefaults() {
+            var settings = $.fn.simplegraph.defaults;
+            settings.width = 300;
+            settings.height = 215;
+            settings.drawLine = false;
+            settings.drawBars = true;
+            settings.barWidth = 20;
+            settings.barOffset = 0;
+            settings.barColor = "#416A97";
+            settings.xAxisLabelOffset = 20;
+            // Day labels
+            settings.xAxisLabelFont = "Helvetica";
+            settings.xAxisLabelColor = "#58595B";
+            settings.xAxisLabelFontSize = "11px";
+            settings.xAxisLabelFontWeight = "600";
+            // Wave height labels (1ft, 2ft...)
+            settings.yAxisLabelFont = "Helvetica";
+            settings.yAxisLabelColor = "#58595B";
+            settings.yAxisLabelFontSize = "11px";
+            settings.yAxisLabelFontWeight = "600";
+            // Wind direction labels
+            settings.windDirLabelFont = "Arial";
+            settings.windDirLabelFontSize = "8px";
+            settings.windDirLabelStyle = {
+              font: settings.windDirLabelFontSize + ' ' + settings.windDirLabelFont
+            };
+            return settings;
+          }
+
+          function labelYAxis(sg, canvas) {
+            var increment  = 1;
+            var start_from = 1;
+            if (sg.grid.maxValueYAxis > 10) {
+              start_from = 2;
+              increment = 2;
+            }
+            if (sg.grid.maxValueYAxis > 20) {
+              start_from = 3;
+              increment = 3;
+            }
+            for (var i = start_from, ii = (sg.grid.maxValueYAxis); i <= ii; i = i + increment) {
+              var value = i,
+                  y     = sg.grid.y(value) + 4,
+                  x     = sg.grid.leftEdge - 15;
+              canvas.text(x, y, value + "ft").attr(sg.settings.yAxisLabelStyle);        
+            }
+          }
+
+          function drawYAxisSightLines(sg, canvas) {
+            var increment = 1;
+            if (sg.grid.maxValueYAxis > 10) {
+              increment = 2;
+            }
+            if (sg.grid.maxValueYAxis > 20) {
+              increment = 3;
+            }
+            for (var i = 0, ii = (sg.grid.maxValueYAxis); i <= ii; i = i + increment) {
+              var value = i,
+                  y     = sg.grid.y(value),
+                  x     = sg.grid.leftEdge;
+              canvas.path({stroke: "#fff"}).moveTo(x,y).lineTo(285, y);
+            }
+          }
+
+          function addAmPmIndicators(sg, canvas, am_or_pm) {
+            jQuery.each(sg.dataSet.data, function(i, value) {
+              var x = sg.grid.x(i);  
+              var color = (am_or_pm == "am") ? "#fff" : "#000";
+              canvas.text(x + sg.dataSet.settings.barOffset + 10, 192, am_or_pm.toUpperCase()).attr({"font-family": "Arial", "font-size": "8px", fill: color});
+            });
+          }
+
+          function plotSwellDirection(sg, canvas, swell_direction) {
+            $.each(swell_direction, function(i, sdir) {
+              var x = sg.grid.x(i);
+              canvas.image("images/chart-arrow-" + sdir + ".gif", x + 12, 232, 16, 16);
+              canvas.text(x + 20, 259, sdir.toUpperCase()).attr(sg.settings.windDirLabelStyle);
+            });    
+          }
+
+          function plotWindDirection(sg, canvas, wind_direction, offset) {
+            $.each(wind_direction, function(i, sdir) {
+              var x = sg.grid.x(i);
+              canvas.image("images/chart-arrow-" + sdir + ".gif", x + offset, 283 , 16, 15);
+              canvas.text(x + offset + 8, 310, sdir.toUpperCase()).attr(sg.settings.windDirLabelStyle);
+            });
+          }
+
+        })(jQuery);
+      </pre>
+    </div>
+  </body>
+</html>

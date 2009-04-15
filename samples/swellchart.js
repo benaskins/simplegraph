@@ -116,6 +116,7 @@
       barOffset: 0,
       barColor: "#416A97",
       xAxisLabelOffset: 20,
+      addHover: false,
       // Day labels
       xAxisLabelFont: "Helvetica",
       xAxisLabelColor: "#58595B",

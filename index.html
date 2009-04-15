@@ -74,13 +74,22 @@
           </tfoot>
           <tbody>
             <tr>
-              <td>25</td>
-              <td>23</td>
-              <td>23</td>
-              <td>28</td>
-              <td>28</td>
-              <td>22</td>
-              <td>25</td>
+              <td class="pos">20</td>
+              <td class="pos">23</td>
+              <td class="pos">23</td>
+              <td class="pos">28</td>
+              <td class="pos">28</td>
+              <td class="pos">22</td>
+              <td class="pos">25</td>
+            </tr>
+            <tr>
+              <td class="neg">-5</td>
+              <td class="neg">-2</td>
+              <td class="neg">5</td>
+              <td class="neg">6</td>
+              <td class="neg">-1</td>
+              <td class="neg">-3</td>
+              <td class="neg">5</td>
             </tr>
           </tbody>
         </table>
@@ -144,7 +153,7 @@
       
       <h3>Combined Temperature / Rain </h3>
       <pre>$("#combined_graph_holder").simplegraph(temp_data, temp_labels,
-  {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp"})
+  {penColor: "#f00", leftGutter: 90, units: "ºC", minYAxisValue: 30, yAxisCaption: "Max Temp", lowerBound: -10})
     .simplegraph.more(rain_data, 
       {penColor: "#00f", units: "mm", minYAxisValue: 10, yAxisCaption: "Max Rainfall"});</pre>                
       <div id='combined_graph_holder'></div>                  

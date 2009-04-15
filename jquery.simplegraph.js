@@ -80,7 +80,7 @@ function DataSet(data, labels, settings) {
       grid.height
     ).attr({stroke: this.settings.lineColor, fill: this.settings.lineColor, opacity: 0.3}); //TODO PARAMS - legend border and fill style
 
-    for (var i = 1, ii = (grid.rows) + 1; i < ii; i = i + 2) {
+    for (var i = 1, ii = (grid.rows); i < (ii - this.settings.lowerBound/2); i = i + 2) {
       var value = (ii - i)*2,
           y     = grid.y(value) + 4, // TODO: Value of 4 works for default dimensions, expect will need to scale
           x     = grid.leftEdge - (6 + this.settings.yAxisOffset);    
@@ -131,10 +131,10 @@ function DataSet(data, labels, settings) {
           bars.rect(x + dataSet.settings.barOffset, y, dataSet.settings.barWidth, (dataSet.settings.height - dataSet.settings.bottomGutter) - y).attr({fill: dataSet.settings.barColor, stroke: "none"});
         }
         if (dataSet.settings.drawLine) {
-          line_path[i == 0 ? "moveTo" : "lineTo"](x, y, 10);
+          line_path[i == 0 ? "moveTo" : "cplineTo"](x, y, 5);
         }
         if (dataSet.settings.fillUnderLine) {
-          fill_path[i == 0 ? "lineTo" : "lineTo"](x, y, 10);
+          fill_path[i == 0 ? "lineTo" : "cplineTo"](x, y, 5);
         }
         if (dataSet.settings.addHover) {
           var rect = canvas.rect(x - 50, y - 50, 100, 100).attr({stroke: "none", fill: "#fff", opacity: 0}); //TODO PARAM - hover target width / height
@@ -185,7 +185,7 @@ function Grid(dataSet, settings) {
     this.topEdge  = this.settings.topGutter;
     this.width    = this.settings.width - this.settings.leftGutter - this.X;
     this.columns  = this.dataSet.data.length - 1; 
-    this.rows     = this.maxValueYAxis / 2; //TODO PARAM - steps per row    
+    this.rows     = (this.maxValueYAxis - this.settings.lowerBound) / 2; //TODO PARAM - steps per row    
   };
 
   this.draw = function(canvas) {
@@ -263,7 +263,7 @@ function Grid(dataSet, settings) {
     topGutter: 20,
     // Label Style
     labelColor: "#000",
-    labelFont: "Verdana",
+    labelFont: "Helvetica",
     labelFontSize: "10px",
     labelFontWeight: "normal",
     // Grid Style

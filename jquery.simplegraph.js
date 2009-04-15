@@ -173,7 +173,7 @@ function Grid(dataSet, settings) {
   this.setYAxis = function() {
     this.height        = this.settings.height - this.settings.topGutter - this.settings.bottomGutter;
     this.maxValueYAxis = this.calculateMaxYAxis();
-    this.Y             = this.height / this.maxValueYAxis;      
+    this.Y             = this.height / (this.maxValueYAxis - this.settings.lowerBound);      
   };
 
   this.setXAxis = function() {
@@ -205,7 +205,7 @@ function Grid(dataSet, settings) {
   };
 
   this.y = function(value) {
-    return this.settings.height - this.settings.bottomGutter - this.Y * value;
+    return this.settings.height - this.settings.bottomGutter - this.Y * (value - this.settings.lowerBound);
   };
 
   this.setYAxis();
@@ -293,7 +293,9 @@ function Grid(dataSet, settings) {
     fillColor: "#000",
     fillOpacity: 0.2,
     // -- Hover
-    addHover: true
+    addHover: true,
+    // Calculations
+    lowerBound: 0
   };
   
   // Default hoverIn callback, this is public and as such can be overwritten. You can write your

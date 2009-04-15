@@ -47,7 +47,6 @@
       $.extend(custom_graph, CustomGraph);
       custom_graph.draw();
     });
-    $(".swellgraph table").hide();  
   });
     
   function gatherData() {

@@ -121,16 +121,16 @@ function DataSet(data, labels, settings) {
             label = dataSet.labels ? dataSet.labels[i]  : " ";
           
         if (dataSet.settings.drawPoints) {
-          var dot = canvas.circle(x, y, dataSet.settings.pointRadius).attr({fill: dataSet.settings.pointColor, stroke: dataSet.settings.pointColor});
+          var dot = canvas.circle(x, y, dataSet.settings.pointRadius).attr({fill: dataSet.settings.pointColor, stroke: "#fff"});
         }
         if (dataSet.settings.drawBars) {
           canvas.rect(x + dataSet.settings.barOffset, y, dataSet.settings.barWidth, (dataSet.settings.height - dataSet.settings.bottomGutter) - y).attr({fill: dataSet.settings.barColor, stroke: "none"});
         }
         if (dataSet.settings.drawLine) {
-          line_path[i == 0 ? "moveTo" : "cplineTo"](x, y, 5);
+          line_path[i == 0 ? "moveTo" : "cplineTo"](x, y, dataSet.settings.cpWidth).attr({opacity: 0.7});
         }
         if (dataSet.settings.fillUnderLine) {
-          fill_path[i == 0 ? "lineTo" : "cplineTo"](x, y, 5);
+          fill_path[i == 0 ? "lineTo" : "cplineTo"](x, y, dataSet.settings.cpWidth);
         }
         if (dataSet.settings.addHover) {
           var rect = canvas.rect(x - 50, y - 50, 100, 100).attr({stroke: "none", fill: "#fff", opacity: 0}); //TODO PARAM - hover target width / height
@@ -279,6 +279,7 @@ function Grid(dataSet, settings) {
     lineColor: "#000",
     lineWidth: 3,
     lineJoin: "round",
+    cpWidth: 5,
     // -- Bars
     drawBars: false,
     barColor: "#000",

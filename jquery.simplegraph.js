@@ -95,23 +95,19 @@ function DataSet(data, labels, settings) {
   };
 
   this.plot = function(grid, canvas) {
-    var line_path = canvas.path({
+    var line_path = canvas.path().attr({
       stroke: this.settings.lineColor, 
       "stroke-width": this.settings.lineWidth, 
       "stroke-linejoin": this.settings.lineJoin
     }); 
 
-    var fill_path = canvas.path({
+    var fill_path = canvas.path().attr({
       stroke: "none", 
       fill: this.settings.fillColor, 
       opacity: this.settings.fillOpacity
     }).moveTo(this.settings.leftGutter, this.settings.height - this.settings.bottomGutter);
 
-    var bars  = canvas.group(),
-        dots  = canvas.group(),
-        cover = canvas.group();
-
-    var hoverFrame = dots.rect(10, 10, 100, 40, 5).attr({
+    var hoverFrame = canvas.rect(10, 10, 100, 40, 5).attr({
       fill: "#fff", stroke: "#474747", "stroke-width": 2}).hide(); //TODO PARAM - fill colour, border colour, border width
     var hoverText = [];
     hoverText[0] = canvas.text(60, 25, "").attr(this.settings.hoverValueStyle).hide(); 
@@ -125,10 +121,10 @@ function DataSet(data, labels, settings) {
             label = dataSet.labels ? dataSet.labels[i]  : " ";
           
         if (dataSet.settings.drawPoints) {
-          var dot = dots.circle(x, y, dataSet.settings.pointRadius).attr({fill: dataSet.settings.pointColor, stroke: dataSet.settings.pointColor});
+          var dot = canvas.circle(x, y, dataSet.settings.pointRadius).attr({fill: dataSet.settings.pointColor, stroke: dataSet.settings.pointColor});
         }
         if (dataSet.settings.drawBars) {
-          bars.rect(x + dataSet.settings.barOffset, y, dataSet.settings.barWidth, (dataSet.settings.height - dataSet.settings.bottomGutter) - y).attr({fill: dataSet.settings.barColor, stroke: "none"});
+          canvas.rect(x + dataSet.settings.barOffset, y, dataSet.settings.barWidth, (dataSet.settings.height - dataSet.settings.bottomGutter) - y).attr({fill: dataSet.settings.barColor, stroke: "none"});
         }
         if (dataSet.settings.drawLine) {
           line_path[i == 0 ? "moveTo" : "cplineTo"](x, y, 5);

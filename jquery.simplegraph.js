@@ -80,8 +80,8 @@ function DataSet(data, labels, settings) {
       grid.height
     ).attr({stroke: this.settings.lineColor, fill: this.settings.lineColor, opacity: 0.3}); //TODO PARAMS - legend border and fill style
 
-    for (var i = 1, ii = (grid.rows); i < (ii - this.settings.lowerBound/2); i = i + 2) {
-      var value = (ii - i)*2,
+    for (var i = 1, ii = (grid.rows); i < ii; i = i + 2) {
+      var value = (ii - i)*2 + this.settings.lowerBound,
           y     = grid.y(value) + 4, // TODO: Value of 4 works for default dimensions, expect will need to scale
           x     = grid.leftEdge - (6 + this.settings.yAxisOffset);    
       canvas.text(x, y, value).attr(this.settings.yAxisLabelStyle);        

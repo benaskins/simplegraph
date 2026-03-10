@@ -44,7 +44,7 @@ SimpleGraph takes a hash of options as it's third argument. Here's what you can 
   labelFont:: ["Arial"] font for all labels
   labelFontSize:: ["9px"] font size for all labels
   gridBorderColor:: ["#ccc"] background grid color, points will be plotted on the grid
-  drawPoints:: [true] whether or not to draw points on the graph
+  drawPoints:: [false] whether or not to draw points on the graph
   pointColor:: ["#000"] point color
   pointRadius:: [3] point radius   
   activePointRadius:: [5] active point radius - used when hovering on points    

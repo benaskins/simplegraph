@@ -1,37 +1,26 @@
 /* SimpleGraph — base styles
-   Data-ink ratio first. Minimal decoration. Let the data speak. */
+   Data-ink ratio first. Minimal decoration. Let the data speak.
 
-.sg {
-  --sg-ink: #333;
-  --sg-muted: #999;
-  --sg-grid: #e8e8e8;
-  --sg-tooltip-bg: #fff;
-  --sg-tooltip-border: #ddd;
-  --sg-tooltip-text: #333;
-  --sg-tooltip-label: #999;
-
-  /* Series colors — override in themes */
-  --sg-series-0: #333;
-  --sg-series-1: #888;
-  --sg-series-2: #bbb;
-}
+   Variables can be set on any ancestor element (container div, body, :root).
+   Theme files set them on wrapper classes like .sg-midnight.
+   Defaults are provided via var() fallbacks — no redefinition on .sg. */
 
 /* ── Labels ── */
 
 .sg text {
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 11px;
-  fill: var(--sg-muted);
+  font-family: var(--sg-font, system-ui, -apple-system, sans-serif);
+  font-size: var(--sg-label-size, 11px);
+  fill: var(--sg-muted, #999);
 }
 
 .sg .sg-y-caption {
-  font-size: 10px;
+  font-size: var(--sg-caption-size, 10px);
 }
 
 /* ── Grid — recede, don't compete ── */
 
 .sg .sg-grid line {
-  stroke: var(--sg-grid);
+  stroke: var(--sg-grid, #e8e8e8);
   stroke-width: 1;
 }
 
@@ -45,11 +34,11 @@
 
 .sg .sg-fill {
   stroke: none;
-  opacity: 0.12;
+  opacity: var(--sg-fill-opacity, 0.12);
 }
 
 .sg .sg-point {
-  stroke: var(--sg-tooltip-bg);
+  stroke: var(--sg-point-stroke, #fff);
   stroke-width: 1.5;
 }
 
@@ -59,20 +48,20 @@
 
 /* Series colors */
 
-.sg .sg-series-0 .sg-line  { stroke: var(--sg-series-0); }
-.sg .sg-series-0 .sg-fill  { fill: var(--sg-series-0); }
-.sg .sg-series-0 .sg-point { fill: var(--sg-series-0); }
-.sg .sg-series-0 .sg-bar   { fill: var(--sg-series-0); }
+.sg .sg-series-0 .sg-line  { stroke: var(--sg-series-0, #333); }
+.sg .sg-series-0 .sg-fill  { fill: var(--sg-series-0, #333); }
+.sg .sg-series-0 .sg-point { fill: var(--sg-series-0, #333); }
+.sg .sg-series-0 .sg-bar   { fill: var(--sg-series-0, #333); }
 
-.sg .sg-series-1 .sg-line  { stroke: var(--sg-series-1); }
-.sg .sg-series-1 .sg-fill  { fill: var(--sg-series-1); }
-.sg .sg-series-1 .sg-point { fill: var(--sg-series-1); }
-.sg .sg-series-1 .sg-bar   { fill: var(--sg-series-1); }
+.sg .sg-series-1 .sg-line  { stroke: var(--sg-series-1, #888); }
+.sg .sg-series-1 .sg-fill  { fill: var(--sg-series-1, #888); }
+.sg .sg-series-1 .sg-point { fill: var(--sg-series-1, #888); }
+.sg .sg-series-1 .sg-bar   { fill: var(--sg-series-1, #888); }
 
-.sg .sg-series-2 .sg-line  { stroke: var(--sg-series-2); }
-.sg .sg-series-2 .sg-fill  { fill: var(--sg-series-2); }
-.sg .sg-series-2 .sg-point { fill: var(--sg-series-2); }
-.sg .sg-series-2 .sg-bar   { fill: var(--sg-series-2); }
+.sg .sg-series-2 .sg-line  { stroke: var(--sg-series-2, #bbb); }
+.sg .sg-series-2 .sg-fill  { fill: var(--sg-series-2, #bbb); }
+.sg .sg-series-2 .sg-point { fill: var(--sg-series-2, #bbb); }
+.sg .sg-series-2 .sg-bar   { fill: var(--sg-series-2, #bbb); }
 
 /* ── Hit areas — invisible interaction targets ── */
 
@@ -93,19 +82,21 @@
 }
 
 .sg .sg-tooltip-bg {
-  fill: var(--sg-tooltip-bg);
-  stroke: var(--sg-tooltip-border);
+  fill: var(--sg-tooltip-bg, #fff);
+  stroke: var(--sg-tooltip-border, #ddd);
   stroke-width: 1;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));
 }
 
 .sg .sg-tooltip-value {
+  font-family: var(--sg-font, system-ui, -apple-system, sans-serif);
   font-size: 12px;
   font-weight: 600;
-  fill: var(--sg-tooltip-text);
+  fill: var(--sg-tooltip-text, #333);
 }
 
 .sg .sg-tooltip-label {
+  font-family: var(--sg-font, system-ui, -apple-system, sans-serif);
   font-size: 10px;
-  fill: var(--sg-tooltip-label);
+  fill: var(--sg-tooltip-label, #999);
 }

@@ -48,23 +48,64 @@
     return el;
   }
 
+  // ── Nice scale — pick round tick intervals ──
+
+  function niceNum(range, round) {
+    var exp = Math.floor(Math.log10(range));
+    var frac = range / Math.pow(10, exp);
+    var nice;
+    if (round) {
+      if (frac < 1.5) nice = 1;
+      else if (frac < 3) nice = 2;
+      else if (frac < 7) nice = 5;
+      else nice = 10;
+    } else {
+      if (frac <= 1) nice = 1;
+      else if (frac <= 2) nice = 2;
+      else if (frac <= 5) nice = 5;
+      else nice = 10;
+    }
+    return nice * Math.pow(10, exp);
+  }
+
+  function niceTicks(min, max, maxTicks) {
+    if (max === min) { max = min + 1; }
+    var range = niceNum(max - min, false);
+    var spacing = niceNum(range / (maxTicks - 1), true);
+    var niceMin = Math.floor(min / spacing) * spacing;
+    var niceMax = Math.ceil(max / spacing) * spacing;
+    var ticks = [];
+    for (var v = niceMin; v <= niceMax + spacing * 0.5; v += spacing) {
+      ticks.push(Math.round(v * 1e10) / 1e10); // avoid float drift
+    }
+    return { min: niceMin, max: niceMax, spacing: spacing, ticks: ticks };
+  }
+
   // ── Grid calculation ──
 
   function Grid(data, settings) {
-    var maxVal = Math.max.apply(Math, data);
-    if (settings.minYAxisValue && settings.minYAxisValue > maxVal) {
-      maxVal = settings.minYAxisValue;
+    var dataMax = Math.max.apply(Math, data);
+    var dataMin = settings.lowerBound;
+    if (settings.minYAxisValue && settings.minYAxisValue > dataMax) {
+      dataMax = settings.minYAxisValue;
     }
+
+    // Target ~5 ticks, adapt to available height
+    var maxTicks = Math.max(3, Math.min(8, Math.floor(
+      (settings.height - settings.topGutter - settings.bottomGutter) / 40
+    )));
+    var scale = niceTicks(dataMin, dataMax, maxTicks);
+
     this.leftEdge = settings.leftGutter;
     this.topEdge = settings.topGutter;
     this.innerHeight = settings.height - settings.topGutter - settings.bottomGutter;
     this.innerWidth = settings.width - settings.leftGutter;
-    this.maxY = maxVal;
-    this.lowerBound = settings.lowerBound;
+    this.maxY = scale.max;
+    this.lowerBound = scale.min;
     this.stepX = this.innerWidth / data.length;
     this.scaleY = this.innerHeight / (this.maxY - this.lowerBound);
     this.columns = data.length - 1;
-    this.rows = Math.floor((this.maxY - this.lowerBound) / 2);
+    this.ticks = scale.ticks;
   }
 
   Grid.prototype.x = function (i) {
@@ -146,14 +187,17 @@
 
   function drawGrid(svg, grid, settings) {
     var g = svgEl('g', { class: 'sg-grid' }, svg);
+    // Vertical lines at each data point
     for (var i = 0; i <= grid.columns; i++) {
       var x = grid.x(i);
       svgEl('line', { x1: x, y1: grid.topEdge, x2: x, y2: grid.topEdge + grid.innerHeight }, g);
     }
-    for (var j = 0; j <= grid.rows; j++) {
-      var y = grid.topEdge + (grid.innerHeight / grid.rows) * j;
-      svgEl('line', { x1: grid.leftEdge, y1: y, x2: grid.leftEdge + grid.innerWidth - grid.stepX, y2: y }, g);
-    }
+    // Horizontal lines at each tick
+    var rightEdge = grid.leftEdge + grid.innerWidth - grid.stepX;
+    grid.ticks.forEach(function (val) {
+      var y = grid.y(val);
+      svgEl('line', { x1: grid.leftEdge, y1: y, x2: rightEdge, y2: y }, g);
+    });
   }
 
   function drawXLabels(svg, labels, grid, settings) {
@@ -169,13 +213,12 @@
 
   function drawYAxis(svg, grid, settings) {
     var g = svgEl('g', { class: 'sg-y-axis' }, svg);
+    var x = grid.leftEdge - (6 + settings.yAxisOffset);
 
-    for (var i = 1; i < grid.rows; i += 2) {
-      var val = (grid.rows - i) * 2 + settings.lowerBound;
+    grid.ticks.forEach(function (val) {
       var y = grid.y(val) + 4;
-      var x = grid.leftEdge - (6 + settings.yAxisOffset);
       svgEl('text', { x: x, y: y, 'text-anchor': 'end' }, g).textContent = val;
-    }
+    });
 
     if (settings.yAxisCaption) {
       var caption = settings.yAxisCaption + (settings.units ? ' (' + settings.units + ')' : '');

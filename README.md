@@ -4,6 +4,18 @@ Zero-dependency SVG graphs. No jQuery, no Raphael, no build step.
 
 [Live demo](https://benaskins.github.io/simplegraph/)
 
+## Why
+
+You have some numbers. You want a graph on a page. You don't want to install a bundler, configure a build pipeline, or read 200 pages of documentation.
+
+SimpleGraph is one function call, one JS file, one CSS file. Drop them in and go.
+
+- **D3** is a toolkit for building visualisations, not a charting library. A line chart is 50+ lines of code.
+- **Chart.js** is 200KB+ with its own canvas renderer, animation system, and plugin architecture.
+- **Plotly/Highcharts** are enterprise-grade and enterprise-weight.
+
+SimpleGraph is 6KB, renders to native SVG, and styles with plain CSS. If you outgrow it, you probably need D3. Until then, you don't.
+
 ## Install
 
 Download `simplegraph.js` or reference it directly:

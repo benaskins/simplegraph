@@ -1,0 +1,24 @@
+/* SimpleGraph — Midnight theme
+   Dark background, luminous data. For dark UIs and dashboards. */
+
+.sg-midnight {
+  --sg-ink: #e0e0e0;
+  --sg-muted: #666;
+  --sg-grid: #2a2a2a;
+  --sg-tooltip-bg: #1e1e1e;
+  --sg-tooltip-border: #333;
+  --sg-tooltip-text: #e0e0e0;
+  --sg-tooltip-label: #777;
+
+  --sg-series-0: #6ee7b7;
+  --sg-series-1: #7dd3fc;
+  --sg-series-2: #c4b5fd;
+}
+
+.sg-midnight .sg-fill {
+  opacity: 0.15;
+}
+
+.sg-midnight .sg-point {
+  stroke: #1a1a1a;
+}

@@ -1,0 +1,24 @@
+/* SimpleGraph — Warmth theme
+   Earthy tones on cream. For editorial and print-adjacent contexts. */
+
+.sg-warmth {
+  --sg-ink: #3d3229;
+  --sg-muted: #a09080;
+  --sg-grid: #e8e0d8;
+  --sg-tooltip-bg: #faf6f0;
+  --sg-tooltip-border: #d8d0c8;
+  --sg-tooltip-text: #3d3229;
+  --sg-tooltip-label: #a09080;
+
+  --sg-series-0: #c05030;
+  --sg-series-1: #d4a040;
+  --sg-series-2: #508060;
+}
+
+.sg-warmth text {
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.sg-warmth .sg-fill {
+  opacity: 0.10;
+}

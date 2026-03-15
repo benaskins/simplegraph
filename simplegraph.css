@@ -1,0 +1,111 @@
+/* SimpleGraph — base styles
+   Data-ink ratio first. Minimal decoration. Let the data speak. */
+
+.sg {
+  --sg-ink: #333;
+  --sg-muted: #999;
+  --sg-grid: #e8e8e8;
+  --sg-tooltip-bg: #fff;
+  --sg-tooltip-border: #ddd;
+  --sg-tooltip-text: #333;
+  --sg-tooltip-label: #999;
+
+  /* Series colors — override in themes */
+  --sg-series-0: #333;
+  --sg-series-1: #888;
+  --sg-series-2: #bbb;
+}
+
+/* ── Labels ── */
+
+.sg text {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  fill: var(--sg-muted);
+}
+
+.sg .sg-y-caption {
+  font-size: 10px;
+}
+
+/* ── Grid — recede, don't compete ── */
+
+.sg .sg-grid line {
+  stroke: var(--sg-grid);
+  stroke-width: 1;
+}
+
+/* ── Data — the only thing that matters ── */
+
+.sg .sg-line {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.sg .sg-fill {
+  stroke: none;
+  opacity: 0.12;
+}
+
+.sg .sg-point {
+  stroke: var(--sg-tooltip-bg);
+  stroke-width: 1.5;
+}
+
+.sg .sg-bar {
+  rx: 1;
+}
+
+/* Series colors */
+
+.sg .sg-series-0 .sg-line  { stroke: var(--sg-series-0); }
+.sg .sg-series-0 .sg-fill  { fill: var(--sg-series-0); }
+.sg .sg-series-0 .sg-point { fill: var(--sg-series-0); }
+.sg .sg-series-0 .sg-bar   { fill: var(--sg-series-0); }
+
+.sg .sg-series-1 .sg-line  { stroke: var(--sg-series-1); }
+.sg .sg-series-1 .sg-fill  { fill: var(--sg-series-1); }
+.sg .sg-series-1 .sg-point { fill: var(--sg-series-1); }
+.sg .sg-series-1 .sg-bar   { fill: var(--sg-series-1); }
+
+.sg .sg-series-2 .sg-line  { stroke: var(--sg-series-2); }
+.sg .sg-series-2 .sg-fill  { fill: var(--sg-series-2); }
+.sg .sg-series-2 .sg-point { fill: var(--sg-series-2); }
+.sg .sg-series-2 .sg-bar   { fill: var(--sg-series-2); }
+
+/* ── Hit areas — invisible interaction targets ── */
+
+.sg .sg-hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+/* ── Tooltip ── */
+
+.sg .sg-tooltip {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sg .sg-tooltip--visible {
+  opacity: 1;
+}
+
+.sg .sg-tooltip-bg {
+  fill: var(--sg-tooltip-bg);
+  stroke: var(--sg-tooltip-border);
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));
+}
+
+.sg .sg-tooltip-value {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--sg-tooltip-text);
+}
+
+.sg .sg-tooltip-label {
+  font-size: 10px;
+  fill: var(--sg-tooltip-label);
+}

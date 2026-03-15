@@ -1,0 +1,38 @@
+/* SimpleGraph — Tufte theme
+   Maximum data-ink ratio. No grid, no chrome. Just the data.
+   Inspired by Edward Tufte's principles of analytical design. */
+
+.sg-tufte {
+  --sg-ink: #222;
+  --sg-muted: #888;
+  --sg-grid: transparent;
+  --sg-tooltip-bg: #fffff8;
+  --sg-tooltip-border: #ccc;
+  --sg-tooltip-text: #222;
+  --sg-tooltip-label: #888;
+
+  --sg-series-0: #222;
+  --sg-series-1: #777;
+  --sg-series-2: #aaa;
+}
+
+.sg-tufte text {
+  font-family: 'ET Book', 'Palatino', 'Georgia', serif;
+  font-size: 11px;
+}
+
+.sg-tufte .sg-line {
+  stroke-width: 1.5;
+}
+
+.sg-tufte .sg-point {
+  stroke-width: 1;
+}
+
+.sg-tufte .sg-fill {
+  opacity: 0.06;
+}
+
+.sg-tufte .sg-grid line {
+  display: none;
+}

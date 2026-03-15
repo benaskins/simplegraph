@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SimpleGraph — zero-dependency SVG graphs</title>
+<link rel="stylesheet" href="simplegraph.css">
+<link rel="stylesheet" href="themes/tufte.css">
+<link rel="stylesheet" href="themes/midnight.css">
+<link rel="stylesheet" href="themes/warmth.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400&display=swap');
 
@@ -17,8 +21,6 @@
     --mid: #78716C;
     --rule: #E7E5E4;
     --code-bg: #F5F5F4;
-    --accent: #DC2626;
-    --blue: #2563EB;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -30,8 +32,6 @@
       --mid: #B8B3AE;
       --rule: #3A3632;
       --code-bg: #2E2A27;
-      --accent: #F87171;
-      --blue: #60A5FA;
     }
   }
 
@@ -64,9 +64,7 @@
     border-bottom: 1px solid var(--rule);
   }
 
-  .subtitle a:hover {
-    color: var(--ink);
-  }
+  .subtitle a:hover { color: var(--ink); }
 
   h2 {
     font-size: 16px;
@@ -75,6 +73,8 @@
     color: var(--mid);
     letter-spacing: -0.01em;
   }
+
+  h2:first-of-type { margin-top: 0; }
 
   pre {
     background: var(--code-bg);
@@ -96,10 +96,11 @@
     margin-bottom: 8px;
   }
 
-  .graph-container svg {
-    display: block;
-    width: 100%;
-    height: auto;
+  .graph-container svg { display: block; width: 100%; height: auto; }
+
+  .graph-container.dark-bg {
+    background: #1a1a1a;
+    border-color: #333;
   }
 
   .badge {
@@ -115,6 +116,17 @@
     margin-bottom: 20px;
   }
 
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 64px 0 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
   footer {
     margin-top: 64px;
     padding-top: 24px;
@@ -123,10 +135,7 @@
     color: var(--muted);
   }
 
-  footer a {
-    color: var(--mid);
-    text-decoration: none;
-  }
+  footer a { color: var(--mid); text-decoration: none; }
 </style>
 </head>
 <body>
@@ -134,57 +143,69 @@
 <h1>SimpleGraph</h1>
 <p class="subtitle">
   Zero-dependency SVG graphs. No jQuery, no Raphael, no build step.<br>
-  <a href="https://github.com/benaskins/simplegraph">GitHub</a>
+  Style with CSS. <a href="https://github.com/benaskins/simplegraph">GitHub</a>
 </p>
-<span class="badge">v2.0</span>
+<span class="badge">v2.2</span>
+
+<!-- ── Base (no theme) ── -->
 
 <h2>Minimal</h2>
-<pre>simplegraph('#el', [20, 23, 23, 28, 28, 22, 25], days);</pre>
+<pre>simplegraph('#el', data, labels);</pre>
 <div class="graph-container"><div id="g1"></div></div>
 
 <h2>Line + fill + points</h2>
-<pre>simplegraph('#el', data, days, {
-  penColor: '#DC2626',
-  fillUnderLine: true,
-  drawPoints: true,
-  minYAxisValue: 30,
-  units: 'ºC'
+<pre>simplegraph('#el', data, labels, {
+  fillUnderLine: true, drawPoints: true, minYAxisValue: 30
 });</pre>
 <div class="graph-container"><div id="g2"></div></div>
 
-<h2>Y-axis caption</h2>
-<pre>simplegraph('#el', rain, days, {
-  penColor: '#2563EB',
-  leftGutter: 60,
-  minYAxisValue: 10,
-  yAxisCaption: 'Max Rainfall',
-  units: 'mm'
+<h2>Multi-series</h2>
+<pre>simplegraph('#el', temp, days, {
+  leftGutter: 90, minYAxisValue: 10,
+  yAxisCaption: 'Temp', units: 'ºC',
+  lowerBound: -10, drawPoints: true
+}).more(rain, {
+  minYAxisValue: 10, yAxisCaption: 'Rain', units: 'mm', lowerBound: 0
 });</pre>
 <div class="graph-container"><div id="g3"></div></div>
 
-<h2>Multi-series</h2>
-<pre>simplegraph('#el', temp, days, {
-  penColor: '#DC2626', leftGutter: 90,
-  minYAxisValue: 10, yAxisCaption: 'Max Temp',
-  units: 'ºC', lowerBound: -10, drawPoints: true
-}).more(rain, {
-  penColor: '#2563EB',
-  minYAxisValue: 10, yAxisCaption: 'Max Rainfall',
-  units: 'mm', lowerBound: 0
+<h2>Bar chart</h2>
+<pre>simplegraph('#el', data, labels, {
+  drawBars: true, drawLine: false, barWidth: 24, minYAxisValue: 30
 });</pre>
 <div class="graph-container"><div id="g4"></div></div>
 
-<h2>Bar chart</h2>
-<pre>simplegraph('#el', data, days, {
-  penColor: '#DC2626',
-  drawBars: true,
-  drawLine: false,
-  drawPoints: false,
-  barWidth: 24,
-  minYAxisValue: 30,
-  units: 'ºC'
-});</pre>
-<div class="graph-container"><div id="g5"></div></div>
+<!-- ── Themes ── -->
+
+<div class="section-label">Themes</div>
+
+<h2>Tufte</h2>
+<pre>&lt;link rel="stylesheet" href="themes/tufte.css"&gt;
+&lt;div class="sg-tufte"&gt;...&lt;/div&gt;</pre>
+<div class="graph-container sg-tufte"><div id="t1"></div></div>
+
+<h2>Midnight</h2>
+<pre>&lt;link rel="stylesheet" href="themes/midnight.css"&gt;
+&lt;div class="sg-midnight"&gt;...&lt;/div&gt;</pre>
+<div class="graph-container dark-bg sg-midnight"><div id="t2"></div></div>
+
+<h2>Warmth</h2>
+<pre>&lt;link rel="stylesheet" href="themes/warmth.css"&gt;
+&lt;div class="sg-warmth"&gt;...&lt;/div&gt;</pre>
+<div class="graph-container sg-warmth" style="background: #faf6f0;"><div id="t3"></div></div>
+
+<!-- ── Custom CSS ── -->
+
+<div class="section-label">Custom Styling</div>
+
+<h2>Override with CSS</h2>
+<pre>.my-chart { --sg-series-0: hotpink; --sg-series-1: dodgerblue; }
+.my-chart .sg-line { stroke-dasharray: 6 3; }</pre>
+<div class="graph-container my-chart"><div id="c1"></div></div>
+<style>
+  .my-chart { --sg-series-0: hotpink; --sg-series-1: dodgerblue; }
+  .my-chart .sg-line { stroke-dasharray: 6 3; }
+</style>
 
 <footer>
   SimpleGraph &middot; MIT License &middot; <a href="https://github.com/benaskins/simplegraph">benaskins/simplegraph</a>
@@ -198,35 +219,26 @@
   var negTemp = [-5, -2, 5, 6, -1, -3, 5];
   var rain = [5, 0, 0, 5, 0, 0, 0];
 
-  // Minimal
+  // Base
   simplegraph('#g1', temp, days);
+  simplegraph('#g2', temp, days, { fillUnderLine: true, drawPoints: true, minYAxisValue: 30 });
+  simplegraph('#g3', negTemp, days, {
+    leftGutter: 90, minYAxisValue: 10, yAxisCaption: 'Temp',
+    units: 'ºC', lowerBound: -10, drawPoints: true
+  }).more(rain, { minYAxisValue: 10, yAxisCaption: 'Rain', units: 'mm', lowerBound: 0 });
+  simplegraph('#g4', temp, days, { drawBars: true, drawLine: false, barWidth: 24, minYAxisValue: 30 });
 
-  // Line + fill + points
-  simplegraph('#g2', temp, days, {
-    penColor: '#DC2626', fillUnderLine: true, drawPoints: true,
-    minYAxisValue: 30, units: 'ºC'
-  });
+  // Themes
+  simplegraph('#t1', temp, days, { fillUnderLine: true, drawPoints: true, minYAxisValue: 30 });
+  simplegraph('#t2', temp, days, { fillUnderLine: true, drawPoints: true, drawGrid: true, minYAxisValue: 30 });
+  simplegraph('#t3', negTemp, days, {
+    leftGutter: 90, minYAxisValue: 10, yAxisCaption: 'Temp',
+    units: 'ºC', lowerBound: -10, drawPoints: true, fillUnderLine: true
+  }).more(rain, { minYAxisValue: 10, yAxisCaption: 'Rain', units: 'mm', lowerBound: 0 });
 
-  // Y-axis caption
-  simplegraph('#g3', rain, days, {
-    penColor: '#2563EB', leftGutter: 60, minYAxisValue: 10,
-    yAxisCaption: 'Max Rainfall', units: 'mm'
-  });
-
-  // Multi-series
-  simplegraph('#g4', negTemp, days, {
-    penColor: '#DC2626', leftGutter: 90, minYAxisValue: 10,
-    yAxisCaption: 'Max Temp', units: 'ºC', lowerBound: -10, drawPoints: true
-  }).more(rain, {
-    penColor: '#2563EB', minYAxisValue: 10, yAxisCaption: 'Max Rainfall',
-    units: 'mm', lowerBound: 0
-  });
-
-  // Bar chart
-  simplegraph('#g5', temp, days, {
-    penColor: '#DC2626', drawBars: true, drawLine: false, drawPoints: false,
-    barWidth: 24, minYAxisValue: 30, units: 'ºC'
-  });
+  // Custom CSS
+  simplegraph('#c1', temp, days, { fillUnderLine: true, drawPoints: true, minYAxisValue: 30 })
+    .more(rain, { minYAxisValue: 10, fillUnderLine: true });
 })();
 </script>
 

@@ -1,4 +1,4 @@
-// SimpleGraph v2.1 — zero-dependency SVG graphs
+// SimpleGraph v2.2 — zero-dependency SVG graphs
 // https://github.com/benaskins/simplegraph
 // MIT License
 
@@ -11,44 +11,27 @@
     leftGutter: 30,
     bottomGutter: 20,
     topGutter: 20,
-    // Grid
     drawGrid: false,
-    gridColor: '#e5e5e5',
-    // Points
     drawPoints: false,
-    pointColor: '#000',
     pointRadius: 3,
     activePointRadius: 5,
-    // Line
     drawLine: true,
-    lineColor: '#000',
     lineWidth: 2,
     smooth: true,
-    // Bars
     drawBars: false,
-    barColor: '#000',
     barWidth: 10,
     barOffset: 0,
-    // Fill
     fillUnderLine: false,
-    fillColor: '#000',
     fillOpacity: 0.15,
-    // Labels
-    labelColor: '#666',
-    labelFont: 'system-ui, -apple-system, sans-serif',
-    labelFontSize: 11,
-    // Y Axis
     yAxisCaption: null,
     yAxisOffset: 0,
     units: '',
     lowerBound: 0,
     minYAxisValue: null,
-    // X Axis
     xAxisLabelOffset: 0,
-    // Hover
     addHover: true,
-    // Pen shorthand
-    penColor: null
+    // Series index for CSS color classes
+    seriesIndex: 0
   };
 
   function extend(target, source) {
@@ -56,15 +39,6 @@
     for (var k in target) result[k] = target[k];
     if (source) for (var k in source) result[k] = source[k];
     return result;
-  }
-
-  function applyPenColor(settings) {
-    if (settings.penColor) {
-      settings.lineColor = settings.penColor;
-      settings.pointColor = settings.penColor;
-      settings.fillColor = settings.penColor;
-      settings.barColor = settings.penColor;
-    }
   }
 
   function svgEl(tag, attrs, parent) {
@@ -81,7 +55,6 @@
     if (settings.minYAxisValue && settings.minYAxisValue > maxVal) {
       maxVal = settings.minYAxisValue;
     }
-
     this.leftEdge = settings.leftGutter;
     this.topEdge = settings.topGutter;
     this.innerHeight = settings.height - settings.topGutter - settings.bottomGutter;
@@ -102,7 +75,7 @@
     return this.topEdge + this.innerHeight - this.scaleY * (val - this.lowerBound);
   };
 
-  // ── Smooth path via cubic bezier ──
+  // ── Path builders ──
 
   function smoothPath(points) {
     if (points.length < 2) return '';
@@ -125,30 +98,23 @@
   // ── Tooltip ──
 
   function createTooltip(svg) {
-    var g = svgEl('g', { class: 'sg-tooltip', opacity: '0', 'pointer-events': 'none' }, svg);
-    var rect = svgEl('rect', {
-      rx: '4', ry: '4', fill: '#fff', stroke: '#ccc', 'stroke-width': '1',
-      filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.12))'
-    }, g);
-    var textVal = svgEl('text', {
-      class: 'sg-tooltip-value', 'text-anchor': 'middle',
-      'font-size': '13', 'font-weight': '600', fill: '#1a1a1a',
-      'font-family': 'system-ui, -apple-system, sans-serif'
-    }, g);
-    var textLabel = svgEl('text', {
-      class: 'sg-tooltip-label', 'text-anchor': 'middle',
-      'font-size': '11', fill: '#888',
-      'font-family': 'system-ui, -apple-system, sans-serif'
-    }, g);
-    return { g: g, rect: rect, textVal: textVal, textLabel: textLabel };
+    var g = svgEl('g', { class: 'sg-tooltip', 'pointer-events': 'none' }, svg);
+    svgEl('rect', { class: 'sg-tooltip-bg', rx: '4', ry: '4' }, g);
+    svgEl('text', { class: 'sg-tooltip-value', 'text-anchor': 'middle' }, g);
+    svgEl('text', { class: 'sg-tooltip-label', 'text-anchor': 'middle' }, g);
+    return g;
   }
 
-  function showTooltip(tip, value, label, x, y, settings) {
+  function showTooltip(tipG, value, label, x, y, settings) {
     var text = value + (settings.units ? ' ' + settings.units : '');
-    tip.textVal.textContent = text;
-    tip.textLabel.textContent = label || '';
+    var rect = tipG.querySelector('.sg-tooltip-bg');
+    var textVal = tipG.querySelector('.sg-tooltip-value');
+    var textLabel = tipG.querySelector('.sg-tooltip-label');
 
-    var padX = 12, padY = 8, gap = 8;
+    textVal.textContent = text;
+    textLabel.textContent = label || '';
+
+    var padX = 12, gap = 8;
     var valLen = text.length * 7.5;
     var labLen = (label || '').length * 6.5;
     var w = Math.max(valLen, labLen) + padX * 2;
@@ -161,25 +127,25 @@
     if (tx + w > settings.width) tx = settings.width - w;
     if (ty < 0) ty = y + gap;
 
-    tip.rect.setAttribute('x', tx);
-    tip.rect.setAttribute('y', ty);
-    tip.rect.setAttribute('width', w);
-    tip.rect.setAttribute('height', h);
-    tip.textVal.setAttribute('x', tx + w / 2);
-    tip.textVal.setAttribute('y', ty + (label ? 18 : 18));
-    tip.textLabel.setAttribute('x', tx + w / 2);
-    tip.textLabel.setAttribute('y', ty + 34);
-    tip.g.setAttribute('opacity', '1');
+    rect.setAttribute('x', tx);
+    rect.setAttribute('y', ty);
+    rect.setAttribute('width', w);
+    rect.setAttribute('height', h);
+    textVal.setAttribute('x', tx + w / 2);
+    textVal.setAttribute('y', ty + (label ? 18 : 18));
+    textLabel.setAttribute('x', tx + w / 2);
+    textLabel.setAttribute('y', ty + 34);
+    tipG.classList.add('sg-tooltip--visible');
   }
 
-  function hideTooltip(tip) {
-    tip.g.setAttribute('opacity', '0');
+  function hideTooltip(tipG) {
+    tipG.classList.remove('sg-tooltip--visible');
   }
 
   // ── Draw functions ──
 
   function drawGrid(svg, grid, settings) {
-    var g = svgEl('g', { class: 'sg-grid', stroke: settings.gridColor, 'stroke-width': '1' }, svg);
+    var g = svgEl('g', { class: 'sg-grid' }, svg);
     for (var i = 0; i <= grid.columns; i++) {
       var x = grid.x(i);
       svgEl('line', { x1: x, y1: grid.topEdge, x2: x, y2: grid.topEdge + grid.innerHeight }, g);
@@ -196,10 +162,7 @@
       svgEl('text', {
         x: grid.x(i) + settings.xAxisLabelOffset,
         y: settings.height - 4,
-        'text-anchor': 'middle',
-        'font-size': settings.labelFontSize,
-        'font-family': settings.labelFont,
-        fill: settings.labelColor
+        'text-anchor': 'middle'
       }, g).textContent = label;
     });
   }
@@ -211,32 +174,26 @@
       var val = (grid.rows - i) * 2 + settings.lowerBound;
       var y = grid.y(val) + 4;
       var x = grid.leftEdge - (6 + settings.yAxisOffset);
-      svgEl('text', {
-        x: x, y: y, 'text-anchor': 'end',
-        'font-size': settings.labelFontSize,
-        'font-family': settings.labelFont,
-        fill: settings.labelColor
-      }, g).textContent = val;
+      svgEl('text', { x: x, y: y, 'text-anchor': 'end' }, g).textContent = val;
     }
 
     if (settings.yAxisCaption) {
       var caption = settings.yAxisCaption + (settings.units ? ' (' + settings.units + ')' : '');
       var cx = grid.leftEdge - (20 + settings.yAxisOffset);
       var cy = grid.topEdge + grid.innerHeight / 2;
-      svgEl('text', {
+      var el = svgEl('text', {
         x: cx, y: cy, 'text-anchor': 'middle',
-        'font-size': settings.labelFontSize,
-        'font-family': settings.labelFont,
-        fill: settings.labelColor,
+        class: 'sg-y-caption',
         transform: 'rotate(-90, ' + cx + ', ' + cy + ')'
-      }, g).textContent = caption;
-
+      }, g);
+      el.textContent = caption;
       settings.yAxisOffset += 30;
     }
   }
 
-  function plotData(svg, data, labels, grid, settings, tooltip) {
-    var g = svgEl('g', { class: 'sg-data' }, svg);
+  function plotData(svg, data, labels, grid, settings, tipG) {
+    var si = settings.seriesIndex;
+    var g = svgEl('g', { class: 'sg-series sg-series-' + si }, svg);
     var points = data.map(function (v, i) { return [grid.x(i), grid.y(v)]; });
     var pathD = settings.smooth ? smoothPath(points) : straightPath(points);
     var bottom = settings.height - settings.bottomGutter;
@@ -245,18 +202,13 @@
       var fillD = pathD +
         ' L ' + points[points.length - 1][0] + ' ' + bottom +
         ' L ' + points[0][0] + ' ' + bottom + ' Z';
-      svgEl('path', {
-        d: fillD, fill: settings.fillColor, opacity: settings.fillOpacity, stroke: 'none'
-      }, g);
+      svgEl('path', { d: fillD, class: 'sg-fill' }, g);
     }
 
     if (settings.drawLine && points.length > 1) {
       svgEl('path', {
-        d: pathD, fill: 'none',
-        stroke: settings.lineColor,
-        'stroke-width': settings.lineWidth,
-        'stroke-linejoin': 'round',
-        'stroke-linecap': 'round'
+        d: pathD, class: 'sg-line',
+        'stroke-width': settings.lineWidth
       }, g);
     }
 
@@ -268,7 +220,7 @@
         svgEl('rect', {
           x: x - settings.barWidth / 2, y: y,
           width: settings.barWidth, height: Math.max(0, h),
-          fill: settings.barColor, rx: '1'
+          class: 'sg-bar'
         }, g);
       });
     }
@@ -282,34 +234,32 @@
       if (settings.drawPoints) {
         dot = svgEl('circle', {
           cx: x, cy: y, r: settings.pointRadius,
-          fill: settings.pointColor, stroke: '#fff', 'stroke-width': '1.5',
           class: 'sg-point'
         }, g);
       }
 
-      if (settings.addHover && tooltip) {
+      if (settings.addHover && tipG) {
         var hitArea = svgEl('rect', {
           x: x - grid.stepX / 2, y: grid.topEdge,
           width: grid.stepX, height: grid.innerHeight,
-          fill: 'transparent', class: 'sg-hit'
+          class: 'sg-hit'
         }, g);
 
         hitArea.addEventListener('mouseenter', function () {
-          showTooltip(tooltip, v, label, x, y, settings);
+          showTooltip(tipG, v, label, x, y, settings);
           if (dot) dot.setAttribute('r', settings.activePointRadius);
         });
         hitArea.addEventListener('mouseleave', function () {
-          hideTooltip(tooltip);
+          hideTooltip(tipG);
           if (dot) dot.setAttribute('r', settings.pointRadius);
         });
       }
     });
   }
 
-  // ── Render the full graph into an SVG ──
+  // ── Render ──
 
   function render(svg, data, labels, settings, series) {
-    // Clear existing content
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
     svg.setAttribute('width', settings.width);
@@ -317,30 +267,28 @@
     svg.setAttribute('viewBox', '0 0 ' + settings.width + ' ' + settings.height);
 
     var grid = new Grid(data, settings);
-    var tooltip = settings.addHover ? createTooltip(svg) : null;
+    var tipG = settings.addHover ? createTooltip(svg) : null;
 
     if (settings.drawGrid) drawGrid(svg, grid, settings);
     drawXLabels(svg, labels, grid, settings);
     if (settings.yAxisCaption) drawYAxis(svg, grid, settings);
-    plotData(svg, data, labels, grid, settings, tooltip);
+    plotData(svg, data, labels, grid, settings, tipG);
 
-    // Render additional series
-    series.forEach(function (s) {
+    series.forEach(function (s, i) {
       var seriesSettings = extend(settings, s.options);
-      applyPenColor(seriesSettings);
+      seriesSettings.seriesIndex = i + 1;
       var g = new Grid(s.data, seriesSettings);
       if (seriesSettings.yAxisCaption) drawYAxis(svg, g, seriesSettings);
-      plotData(svg, s.data, labels, g, seriesSettings, tooltip);
+      plotData(svg, s.data, labels, g, seriesSettings, tipG);
     });
 
-    if (tooltip) svg.appendChild(tooltip.g);
+    if (tipG) svg.appendChild(tipG);
   }
 
   // ── Public API ──
 
   function simplegraph(target, data, labels, options) {
-    // Resolve target element
-    var el, isSvg;
+    var el;
     if (typeof target === 'string') {
       el = document.querySelector(target);
     } else {
@@ -348,28 +296,21 @@
     }
     if (!el) return null;
 
-    isSvg = el instanceof SVGElement;
-
+    var isSvg = el instanceof SVGElement;
     var settings = extend(defaults, options);
-    applyPenColor(settings);
     data = data.map(Number);
     labels = labels || [];
-
-    // Additional series tracked for re-rendering
     var series = [];
 
-    // Create or reuse SVG
     var svg;
     if (isSvg) {
-      // Target is an SVG element — render directly into it
       svg = el;
     } else {
-      // Remove any previous simplegraph SVG in this container (idempotent)
       var existing = el.querySelector('svg[data-simplegraph]');
       if (existing) el.removeChild(existing);
-
       svg = svgEl('svg', {
         'data-simplegraph': '',
+        class: 'sg',
         xmlns: 'http://www.w3.org/2000/svg'
       });
       el.appendChild(svg);
@@ -377,32 +318,25 @@
 
     render(svg, data, labels, settings, series);
 
-    // Return API handle
     var api = {
       svg: svg,
       settings: settings,
 
-      // Add another data series
       more: function (moreData, moreOptions) {
         series.push({ data: moreData.map(Number), options: moreOptions });
         render(svg, data, labels, settings, series);
         return api;
       },
 
-      // Replace data and re-render
       update: function (newData, newLabels, newOptions) {
         data = newData.map(Number);
         if (newLabels) labels = newLabels;
-        if (newOptions) {
-          settings = extend(settings, newOptions);
-          applyPenColor(settings);
-        }
+        if (newOptions) settings = extend(settings, newOptions);
         series = [];
         render(svg, data, labels, settings, series);
         return api;
       },
 
-      // Remove SVG from DOM
       destroy: function () {
         if (svg.parentNode) svg.parentNode.removeChild(svg);
         svg = null;
@@ -412,9 +346,7 @@
     return api;
   }
 
-  // Export
   root.simplegraph = simplegraph;
-
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = simplegraph;
   }

@@ -3,13 +3,13 @@
 
 .sg-midnight {
   --sg-muted: #666;
-  --sg-grid: #2a2a2a;
+  --sg-grid: rgba(255, 255, 255, 0.06);
   --sg-tooltip-bg: #1e1e1e;
   --sg-tooltip-border: #333;
   --sg-tooltip-text: #e0e0e0;
   --sg-tooltip-label: #777;
   --sg-point-stroke: #1a1a1a;
-  --sg-fill-opacity: 0.15;
+  --sg-fill-opacity: 0.08;
 
   --sg-series-0: #6ee7b7;
   --sg-series-1: #7dd3fc;

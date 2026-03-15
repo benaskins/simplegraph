@@ -1,4 +1,4 @@
-// SimpleGraph v2 — zero-dependency SVG graphs
+// SimpleGraph v2.1 — zero-dependency SVG graphs
 // https://github.com/benaskins/simplegraph
 // MIT License
 
@@ -56,6 +56,15 @@
     for (var k in target) result[k] = target[k];
     if (source) for (var k in source) result[k] = source[k];
     return result;
+  }
+
+  function applyPenColor(settings) {
+    if (settings.penColor) {
+      settings.lineColor = settings.penColor;
+      settings.pointColor = settings.penColor;
+      settings.fillColor = settings.penColor;
+      settings.barColor = settings.penColor;
+    }
   }
 
   function svgEl(tag, attrs, parent) {
@@ -171,12 +180,10 @@
 
   function drawGrid(svg, grid, settings) {
     var g = svgEl('g', { class: 'sg-grid', stroke: settings.gridColor, 'stroke-width': '1' }, svg);
-    // Vertical lines
     for (var i = 0; i <= grid.columns; i++) {
       var x = grid.x(i);
       svgEl('line', { x1: x, y1: grid.topEdge, x2: x, y2: grid.topEdge + grid.innerHeight }, g);
     }
-    // Horizontal lines
     for (var j = 0; j <= grid.rows; j++) {
       var y = grid.topEdge + (grid.innerHeight / grid.rows) * j;
       svgEl('line', { x1: grid.leftEdge, y1: y, x2: grid.leftEdge + grid.innerWidth - grid.stepX, y2: y }, g);
@@ -200,7 +207,6 @@
   function drawYAxis(svg, grid, settings) {
     var g = svgEl('g', { class: 'sg-y-axis' }, svg);
 
-    // Value labels
     for (var i = 1; i < grid.rows; i += 2) {
       var val = (grid.rows - i) * 2 + settings.lowerBound;
       var y = grid.y(val) + 4;
@@ -213,7 +219,6 @@
       }, g).textContent = val;
     }
 
-    // Caption
     if (settings.yAxisCaption) {
       var caption = settings.yAxisCaption + (settings.units ? ' (' + settings.units + ')' : '');
       var cx = grid.leftEdge - (20 + settings.yAxisOffset);
@@ -236,7 +241,6 @@
     var pathD = settings.smooth ? smoothPath(points) : straightPath(points);
     var bottom = settings.height - settings.bottomGutter;
 
-    // Fill
     if (settings.fillUnderLine && points.length > 1) {
       var fillD = pathD +
         ' L ' + points[points.length - 1][0] + ' ' + bottom +
@@ -246,7 +250,6 @@
       }, g);
     }
 
-    // Line
     if (settings.drawLine && points.length > 1) {
       svgEl('path', {
         d: pathD, fill: 'none',
@@ -257,7 +260,6 @@
       }, g);
     }
 
-    // Bars
     if (settings.drawBars) {
       data.forEach(function (v, i) {
         var x = grid.x(i) + settings.barOffset;
@@ -271,7 +273,6 @@
       });
     }
 
-    // Points & hover targets
     data.forEach(function (v, i) {
       var x = grid.x(i);
       var y = grid.y(v);
@@ -305,69 +306,115 @@
     });
   }
 
-  // ── Public API ──
+  // ── Render the full graph into an SVG ──
 
-  function simplegraph(target, data, labels, options) {
-    var el = typeof target === 'string' ? document.querySelector(target) : target;
-    if (!el) return null;
+  function render(svg, data, labels, settings, series) {
+    // Clear existing content
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    var settings = extend(defaults, options);
-
-    // Pen shorthand
-    if (settings.penColor) {
-      settings.lineColor = settings.penColor;
-      settings.pointColor = settings.penColor;
-      settings.fillColor = settings.penColor;
-      settings.barColor = settings.penColor;
-    }
-
-    // Coerce string data to numbers
-    data = data.map(Number);
-
-    var svg = svgEl('svg', {
-      width: settings.width, height: settings.height,
-      viewBox: '0 0 ' + settings.width + ' ' + settings.height,
-      xmlns: 'http://www.w3.org/2000/svg'
-    });
-    el.appendChild(svg);
+    svg.setAttribute('width', settings.width);
+    svg.setAttribute('height', settings.height);
+    svg.setAttribute('viewBox', '0 0 ' + settings.width + ' ' + settings.height);
 
     var grid = new Grid(data, settings);
     var tooltip = settings.addHover ? createTooltip(svg) : null;
 
     if (settings.drawGrid) drawGrid(svg, grid, settings);
-    drawXLabels(svg, labels || [], grid, settings);
+    drawXLabels(svg, labels, grid, settings);
     if (settings.yAxisCaption) drawYAxis(svg, grid, settings);
-    plotData(svg, data, labels || [], grid, settings, tooltip);
+    plotData(svg, data, labels, grid, settings, tooltip);
 
-    // Move tooltip to front
+    // Render additional series
+    series.forEach(function (s) {
+      var seriesSettings = extend(settings, s.options);
+      applyPenColor(seriesSettings);
+      var g = new Grid(s.data, seriesSettings);
+      if (seriesSettings.yAxisCaption) drawYAxis(svg, g, seriesSettings);
+      plotData(svg, s.data, labels, g, seriesSettings, tooltip);
+    });
+
     if (tooltip) svg.appendChild(tooltip.g);
+  }
 
-    // Return API for chaining
-    return {
+  // ── Public API ──
+
+  function simplegraph(target, data, labels, options) {
+    // Resolve target element
+    var el, isSvg;
+    if (typeof target === 'string') {
+      el = document.querySelector(target);
+    } else {
+      el = target;
+    }
+    if (!el) return null;
+
+    isSvg = el instanceof SVGElement;
+
+    var settings = extend(defaults, options);
+    applyPenColor(settings);
+    data = data.map(Number);
+    labels = labels || [];
+
+    // Additional series tracked for re-rendering
+    var series = [];
+
+    // Create or reuse SVG
+    var svg;
+    if (isSvg) {
+      // Target is an SVG element — render directly into it
+      svg = el;
+    } else {
+      // Remove any previous simplegraph SVG in this container (idempotent)
+      var existing = el.querySelector('svg[data-simplegraph]');
+      if (existing) el.removeChild(existing);
+
+      svg = svgEl('svg', {
+        'data-simplegraph': '',
+        xmlns: 'http://www.w3.org/2000/svg'
+      });
+      el.appendChild(svg);
+    }
+
+    render(svg, data, labels, settings, series);
+
+    // Return API handle
+    var api = {
       svg: svg,
       settings: settings,
+
+      // Add another data series
       more: function (moreData, moreOptions) {
-        var s = extend(settings, moreOptions);
-        if (s.penColor) {
-          s.lineColor = s.penColor;
-          s.pointColor = s.penColor;
-          s.fillColor = s.penColor;
-          s.barColor = s.penColor;
+        series.push({ data: moreData.map(Number), options: moreOptions });
+        render(svg, data, labels, settings, series);
+        return api;
+      },
+
+      // Replace data and re-render
+      update: function (newData, newLabels, newOptions) {
+        data = newData.map(Number);
+        if (newLabels) labels = newLabels;
+        if (newOptions) {
+          settings = extend(settings, newOptions);
+          applyPenColor(settings);
         }
-        moreData = moreData.map(Number);
-        var g = new Grid(moreData, s);
-        if (s.yAxisCaption) drawYAxis(svg, g, s);
-        plotData(svg, moreData, labels || [], g, s, tooltip);
-        if (tooltip) svg.appendChild(tooltip.g);
-        return this;
+        series = [];
+        render(svg, data, labels, settings, series);
+        return api;
+      },
+
+      // Remove SVG from DOM
+      destroy: function () {
+        if (svg.parentNode) svg.parentNode.removeChild(svg);
+        svg = null;
       }
     };
+
+    return api;
   }
 
   // Export
   root.simplegraph = simplegraph;
 
-  // ES module compat
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = simplegraph;
   }

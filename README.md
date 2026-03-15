@@ -22,7 +22,7 @@ simplegraph('#target', data, labels, options);
 
 | Arg | Type | Description |
 |---|---|---|
-| `target` | string or Element | CSS selector or DOM element |
+| `target` | string, Element, or SVGElement | CSS selector, DOM element, or SVG element |
 | `data` | array | Numeric values to plot |
 | `labels` | array | X-axis labels |
 | `options` | object | Optional configuration |
@@ -82,6 +82,58 @@ simplegraph('#chart', tempData, days, {
 | `labelColor` | '#666' | Axis label color |
 | `labelFont` | 'system-ui' | Axis label font |
 | `labelFontSize` | 11 | Axis label font size |
+
+### Update, destroy
+
+`simplegraph` returns a handle for updating data or tearing down:
+
+```js
+var chart = simplegraph('#chart', data, labels, options);
+
+// Replace data (re-renders in place)
+chart.update([25, 30, 28, 32, 27, 24, 29]);
+
+// Replace data, labels, and options
+chart.update(newData, newLabels, { penColor: '#2563EB' });
+
+// Remove from DOM
+chart.destroy();
+```
+
+Calling `simplegraph()` on the same target is also idempotent — it replaces the previous graph rather than appending a second one.
+
+### Reactive frameworks
+
+The handle API works naturally with any reactive framework:
+
+```js
+// Svelte
+let data = $state([20, 23, 23, 28]);
+let chart;
+
+$effect(() => {
+  if (!chart) {
+    chart = simplegraph(container, data, labels);
+  } else {
+    chart.update(data);
+  }
+  return () => chart.destroy();
+});
+```
+
+```js
+// React
+useEffect(() => {
+  const chart = simplegraph(ref.current, data, labels, options);
+  return () => chart.destroy();
+}, [data, labels]);
+```
+
+You can also pass an SVG element directly if your framework manages the DOM:
+
+```js
+simplegraph(svgElement, data, labels, options);
+```
 
 ## v1 → v2 migration
 
